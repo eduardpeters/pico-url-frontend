@@ -14,7 +14,7 @@ function Redirect() {
             const response = await urlsAPI.getOriginal(shortId);
             if (response) {
                 setOriginalUrl(response.originalUrl);
-                timeout = setTimeout(() => window.open(response.originalUrl), 5000);
+                timeout = setTimeout(() => window.open(response.originalUrl, "_self"), 5000);
             }
             else {
                 navigate("/not-found");
@@ -35,7 +35,7 @@ function Redirect() {
             {!showErrorMessage ? 
                 <div>
                     <h3>The service will now redirect you to:</h3>
-                    <a href={originalUrl}>Speed things up!</a>
+                    <a href={originalUrl} target="_self">Speed things up!</a>
                 </div>
                 :
                 <h3>Incorrect shortened URL</h3>
