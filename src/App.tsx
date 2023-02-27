@@ -1,11 +1,17 @@
+import { Route, Routes } from 'react-router-dom';
+import NotFound from './components/NotFound';
+import Redirect from './components/Redirect';
 import Root from './components/Root';
-import './assets/styles/App.css';
 
 function App() {
     return (
-        <div className="App">
-            <Root />
-        </div>
+        <>
+            <Routes>
+                <Route path="/" element={<Root />} />
+                <Route path="/:id" element={<Redirect />} />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </>
     );
 }
 
