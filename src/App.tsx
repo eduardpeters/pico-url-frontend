@@ -8,7 +8,8 @@ function App() {
         <>
             <Routes>
                 <Route path="/" element={<Root />} />
-                <Route path="/:id" element={<Redirect />} />
+                <Route path="/:shortId" element={<Redirect />} />
+                <Route path="/not-found" element={<NotFound />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </>
