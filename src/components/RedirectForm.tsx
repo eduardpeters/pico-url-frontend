@@ -8,7 +8,6 @@ function RedirectForm() {
     function handleRedirectSubmit(event: React.FormEvent) {
         event.preventDefault();
         const shortUrl = inputValue.length === 10 ? inputValue : inputValue.substring(inputValue.length - 10);
-        console.log("Should redirect: ", shortUrl);
         navigate(`/${shortUrl}`);
     }
 
