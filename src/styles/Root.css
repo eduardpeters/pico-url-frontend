@@ -1,0 +1,12 @@
+.Root {
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+    justify-content: center;
+}
+
+.root__content {
+    background-color: #44475a;
+    height: 50vh;
+    width: 50vw;
+}

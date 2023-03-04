@@ -1,0 +1,9 @@
+body {
+    background-image: linear-gradient(45deg, #282c34, #6272a4);
+    background-size: auto;
+    background-color: #282c34;
+    color: #e9f4fe;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+}
