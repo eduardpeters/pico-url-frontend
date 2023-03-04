@@ -1,12 +1,25 @@
-.Root {
-    display: flex;
-    flex-flow: row nowrap;
-    width: 100%;
-    justify-content: center;
+.hidden {
+    transition: opacity 1s ease-out;
+    opacity: 0;
 }
 
-.root__content {
-    background-color: #44475a;
-    height: 50vh;
-    width: 50vw;
+.unhide {
+    cursor: pointer;
+}
+
+.unhide:hover + .hidden {
+    opacity: 100;
+}
+
+.root__container {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    margin: 0.5rem;
+    width: 100%;
+}
+
+.root__paragraph {
+    margin: 0.2rem;
 }

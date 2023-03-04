@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
 body {
     background-image: linear-gradient(135deg, #282c34, #6272a4);
     background-size: auto;
     background-color: #282c34;
     color: #e9f4fe;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Open Sans', Verdana, sans-serif;
     margin: 0;
     width: 100vw;
     height: 100vh;
