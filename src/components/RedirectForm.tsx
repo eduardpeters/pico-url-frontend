@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/RedirectForm.css";
 
 function RedirectForm() {
     const navigate = useNavigate();
@@ -12,19 +13,18 @@ function RedirectForm() {
     }
 
     return (
-        <div className="Redirect-form">
-            <form onSubmit={event => handleRedirectSubmit(event)}>
-                <input
-                    type="text"
-                    minLength={10}
-                    placeholder="Enter a Pico URL address or the 10 character ID"
-                    required
-                    onChange={event => setInputValue(event.target.value)}
-                >
-                </input>
-                <button type="submit">Magnify!</button>
-            </form>
-        </div>
+        <form className="redirect__container" onSubmit={event => handleRedirectSubmit(event)}>
+            <input
+                className="redirect__input"
+                type="text"
+                minLength={10}
+                placeholder="p1C0_uRL!!"
+                required
+                onChange={event => setInputValue(event.target.value)}
+            >
+            </input>
+            <button className="redirect__button" type="submit">Magnify!</button>
+        </form>
     )
 }
 

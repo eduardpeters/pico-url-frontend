@@ -1,0 +1,39 @@
+.redirect__container {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin: 0.5rem;
+    width: 100%;
+}
+
+.redirect__input {
+    all: unset;
+    background-color: #44475a;
+    border: 0.1rem solid #6272a4;
+    color: #8be9fd;
+    height: 2rem;
+    padding: 0.5rem;
+    width: 50%;
+}
+
+.redirect__input:focus {
+    border-color: #ff79c6;
+}
+
+.redirect__input::placeholder {
+    color: #8be9fd;
+    opacity: 0.8;
+}
+
+.redirect__button {
+    background-color: #bd93f9;
+    border: 0.1rem solid #6272a4;
+    border-radius: 0.5rem;
+    color: #282a36;
+    font-size: 1.1rem;
+    height: 3rem;
+    margin: 0 0.5rem;
+    padding: 0.5rem;
+    width: 6rem;
+}
