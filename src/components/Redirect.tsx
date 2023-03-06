@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { urlsAPI } from "../services/urlsAPI";
 import styles from "../styles/general.module.css";
@@ -8,16 +8,17 @@ function Redirect() {
     const { shortId } = useParams();
     const navigate = useNavigate();
     const [originalUrl, setOriginalUrl] = useState("");
+    const timer = useRef<NodeJS.Timeout | null>(null);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     useEffect(() => {
-        let timeout: NodeJS.Timeout;
         async function getOriginal(shortId: string) {
             const response = await urlsAPI.getOriginal(shortId);
-            console.log(response);
             if (!response.error) {
                 setOriginalUrl(response.originalUrl);
-                timeout = setTimeout(() => window.open(response.originalUrl, "_self"), 5000);
+                if (!timer.current) {
+                    timer.current = setTimeout(() => window.open(response.originalUrl, "_self"), 5000);
+                }
             }
             else {
                 navigate("/not-found", { state: { error: response.error } });
@@ -29,7 +30,7 @@ function Redirect() {
         else {
             setShowErrorMessage(true);
         }
-        return () => clearTimeout(timeout);
+        return () => clearTimeout(timer.current as NodeJS.Timeout);
     }, []);
 
     return (
