@@ -1,8 +1,15 @@
-.redirect__container {
+.redirect__content {
     align-items: center;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     margin: 0.5rem;
     width: 100%;
+}
+
+.redirect__link {
+    color: #50fa7b;
+    font-size: 1.17rem;
+    margin: 1rem;
+    text-decoration: none;
 }

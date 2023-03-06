@@ -10,7 +10,9 @@ function NotFound() {
             <h1 className="not-found__error">{state.error}</h1>
             <h3>Thank you for using Pico URL</h3>
             <h3>Sadly, we could not retrieve the page you were looking for</h3>
-            <Link to="/">Return to Homepage</Link>
+            <div className={styles.links}>
+                <Link to="/">Return home</Link>
+            </div>
         </div>
     );
 }

@@ -20,7 +20,7 @@ function Redirect() {
                 timeout = setTimeout(() => window.open(response.originalUrl, "_self"), 5000);
             }
             else {
-                navigate("/not-found", {state: {error: response.error }});
+                navigate("/not-found", { state: { error: response.error } });
             }
         }
         if (shortId && shortId.length === 10) {
@@ -35,17 +35,20 @@ function Redirect() {
     return (
         <div className={styles.container}>
             <h3 className={styles.subtitle}>Thank you for using Pico URL</h3>
-            {!showErrorMessage ? 
-                <div className="redirect__container">
-                    <h3>The service will now redirect you to:</h3>
-                    <a href={originalUrl} target="_self">Speed things up!</a>
-                </div>
-                :
-                <div className="redirect__container">
-                    <h3>Incorrect shortened URL format</h3>
-                    <Link to="/">Return to Homepage</Link>
-                </div>
-            }
+            <div className="redirect__content">
+                {!showErrorMessage ?
+                    <>
+                        <h3>The service will now redirect you to:</h3>
+                        <p>{originalUrl}</p>
+                        <a href={originalUrl} target="_self" className="redirect__link">Speed things up!</a>
+                    </>
+                    :
+                    <>
+                        <h3>Incorrect shortened URL format</h3>
+                        <Link to="/" className="redirect__link">Return to Homepage</Link>
+                    </>
+                }
+            </div>
         </div>
     );
 }
