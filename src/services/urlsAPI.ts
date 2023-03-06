@@ -10,7 +10,7 @@ async function getOriginal(shortId: string) {
     }
     catch (error: unknown) {
         console.error(error);
-        return {error: (error as AxiosError).response?.data};
+        return {error: (error as AxiosError).response?.data || (error as AxiosError).message };
     }
 }
 

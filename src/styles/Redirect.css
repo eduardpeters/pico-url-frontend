@@ -1,0 +1,8 @@
+.redirect__container {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    margin: 0.5rem;
+    width: 100%;
+}

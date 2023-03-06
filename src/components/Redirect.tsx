@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { urlsAPI } from "../services/urlsAPI";
+import styles from "../styles/general.module.css";
+import "../styles/Redirect.css";
 
 function Redirect() {
     const { shortId } = useParams();
@@ -12,12 +14,13 @@ function Redirect() {
         let timeout: NodeJS.Timeout;
         async function getOriginal(shortId: string) {
             const response = await urlsAPI.getOriginal(shortId);
-            if (response) {
+            console.log(response);
+            if (!response.error) {
                 setOriginalUrl(response.originalUrl);
                 timeout = setTimeout(() => window.open(response.originalUrl, "_self"), 5000);
             }
             else {
-                navigate("/not-found");
+                navigate("/not-found", {state: {error: response.error }});
             }
         }
         if (shortId && shortId.length === 10) {
@@ -30,15 +33,18 @@ function Redirect() {
     }, []);
 
     return (
-        <div className="Redirect">
-            <h3>Thank you for using Pico URL</h3>
+        <div className={styles.container}>
+            <h3 className={styles.subtitle}>Thank you for using Pico URL</h3>
             {!showErrorMessage ? 
-                <div>
+                <div className="redirect__container">
                     <h3>The service will now redirect you to:</h3>
                     <a href={originalUrl} target="_self">Speed things up!</a>
                 </div>
                 :
-                <h3>Incorrect shortened URL</h3>
+                <div className="redirect__container">
+                    <h3>Incorrect shortened URL format</h3>
+                    <Link to="/">Return to Homepage</Link>
+                </div>
             }
         </div>
     );

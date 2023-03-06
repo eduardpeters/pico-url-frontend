@@ -1,7 +1,7 @@
 .container {
     align-items: center;
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
