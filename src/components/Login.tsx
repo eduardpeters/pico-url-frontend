@@ -13,7 +13,6 @@ function Login() {
         event.preventDefault();
         if (validateLoginForm(email, password)) {
             const response = await authAPI.postLogIn(email, password);
-            console.log(response);
             if (response.error) {
                 showErrorMessage(response.error);
             }
