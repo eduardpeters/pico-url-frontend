@@ -7,26 +7,45 @@ import "../styles/Login.css";
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-
+    const [errorMessage, setErrorMessage] = useState("OK");
 
     async function handleLogIn(event: React.FormEvent) {
         event.preventDefault();
-        console.log("Ready to send");
-        const response = await authAPI.postLogIn(email, password);
-        if (response.error) {
-            setErrorMessage(response.error);
+        if (validateLoginForm(email, password)) {
+            const response = await authAPI.postLogIn(email, password);
+            console.log(response);
+            if (response.error) {
+                showErrorMessage(response.error);
+            }
+            else {
+                console.log("Login success:", response);
+            }
         }
-        else {
-            console.log("Login success:", response);
+    }
+
+    function validateLoginForm(email: string, password: string): boolean {
+        if (!email || !password) {
+            showErrorMessage("Please provide an e-mail and password");
+            return false;
         }
+        if (password.length < 5) {
+            showErrorMessage("Password must be at least 5 characters");
+            return false;
+        }
+        return true;
+    }
+
+    function showErrorMessage(text: string) {
+        setErrorMessage(text);
+        setTimeout(() => setErrorMessage("OK"), 3000);
     }
 
     return (
         <div className={styles.container}>
             <div className="login__content">
+                <h1 className={styles.title}>Pico URL Login</h1>
                 <h3 className={styles.subtitle}>Please enter your e-mail and password</h3>
-                <p className="form__error">{errorMessage}</p>
+                <h4 className="form__error" style={{ visibility: errorMessage.length > 2 ? "visible" : "hidden" }}>{errorMessage}</h4>
                 <form className="form__container" onSubmit={event => handleLogIn(event)}>
                     <div className="form__field">
                         <label htmlFor="email">E-Mail</label>
