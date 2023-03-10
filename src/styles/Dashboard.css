@@ -1,0 +1,17 @@
+.dashboard__container {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard__title {
+    text-align: center;
+}
+
+.dashboard__upper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    width: 100%;
+}
