@@ -4,7 +4,7 @@ import "../styles/RedirectForm.css";
 
 function RedirectForm() {
     const navigate = useNavigate();
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState("");
 
     function handleRedirectSubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -20,9 +20,9 @@ function RedirectForm() {
                 minLength={10}
                 placeholder="p1C0_uRL!!"
                 required
+                value={inputValue}
                 onChange={event => setInputValue(event.target.value)}
-            >
-            </input>
+            ></input>
             <button className="redirect__button" type="submit">Magnify!</button>
         </form>
     )

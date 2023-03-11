@@ -63,19 +63,43 @@ function Register() {
                 <form className="form__container" onSubmit={event => handleRegister(event)}>
                     <div className="form__field">
                         <label htmlFor="name">Name</label>
-                        <input type="text" id="name" required onChange={event => setName(event.target.value)}></input>
+                        <input
+                            type="text"
+                            id="name"
+                            required
+                            value={name}
+                            onChange={event => setName(event.target.value)}
+                        ></input>
                     </div>
                     <div className="form__field">
                         <label htmlFor="email">E-Mail</label>
-                        <input type="email" id="email" required onChange={event => setEmail(event.target.value)}></input>
+                        <input
+                            type="email"
+                            id="email"
+                            required 
+                            value={email}
+                            onChange={event => setEmail(event.target.value)}
+                        ></input>
                     </div>
                     <div className="form__field">
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" required onChange={event => setPassword(event.target.value)}></input>
+                        <input
+                            type="password"
+                            id="password"
+                            required
+                            value={password}
+                            onChange={event => setPassword(event.target.value)}
+                        ></input>
                     </div>
                     <div className="form__field">
                         <label htmlFor="confirm-password">Confirm Password</label>
-                        <input type="password" id="confirm-password" required onChange={event => setConfirmPassword(event.target.value)}></input>
+                        <input
+                            type="password"
+                            id="confirm-password"
+                            required
+                            value={confirmPassword}
+                            onChange={event => setConfirmPassword(event.target.value)}
+                        ></input>
                     </div>
                     <button className="form__button" type="submit">Register!</button>
                 </form>

@@ -60,11 +60,23 @@ function Login() {
                 <form className="form__container" onSubmit={event => handleLogIn(event)}>
                     <div className="form__field">
                         <label htmlFor="email">E-Mail</label>
-                        <input type="email" id="email" required onChange={event => setEmail(event.target.value)}></input>
+                        <input
+                            type="email"
+                            id="email"
+                            required
+                            value={email}
+                            onChange={event => setEmail(event.target.value)}
+                        ></input>
                     </div>
                     <div className="form__field">
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" required onChange={event => setPassword(event.target.value)}></input>
+                        <input
+                            type="password"
+                            id="password"
+                            required
+                            value={password}
+                            onChange={event => setPassword(event.target.value)}
+                        ></input>
                     </div>
                     <button className="form__button" type="submit">Log In!</button>
                 </form>

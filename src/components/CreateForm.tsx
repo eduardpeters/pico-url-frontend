@@ -39,14 +39,14 @@ function CreateForm() {
 
     return (
         <form onSubmit={event => handleCreateSubmit(event)}>
-            <label>URL to shorten</label>
+            <label htmlFor="originalUrl">URL to shorten</label>
             <input
                 type="url"
+                id="originalUrl"
                 value={originalUrl}
                 onChange={event => setOriginalUrl(event.target.value)}
                 required
-            >
-            </input>
+            ></input>
             <button type="submit">Minify!</button>
         </form>
     );
