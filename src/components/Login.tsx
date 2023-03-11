@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { authAPI } from "../services/authAPI";
 import styles from "../styles/general.module.css";
@@ -7,6 +7,7 @@ import "../styles/Login.css";
 
 function Login() {
     const authContext = useAuthContext();
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("OK");
@@ -19,7 +20,6 @@ function Login() {
                 showErrorMessage(response.error);
             }
             else {
-                console.log("Login success:", response);
                 authContext?.setIsLoggedIn(true);
                 authContext?.setUserDetails(
                     {
@@ -29,6 +29,7 @@ function Login() {
                         token: response.token
                     }
                 );
+                navigate("/dashboard");
             }
         }
     }

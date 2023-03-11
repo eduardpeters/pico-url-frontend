@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { usersAPI } from "../services/usersAPI";
 import styles from "../styles/general.module.css";
 import "../styles/Register.css";
 
 function Register() {
+    const navigate = useNavigate();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -19,7 +20,7 @@ function Register() {
                 showErrorMessage(response.error);
             }
             else {
-                console.log("Registration success:", response);
+                navigate("/login");
             }
         }
     }

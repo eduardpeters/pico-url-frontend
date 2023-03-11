@@ -7,7 +7,6 @@ async function postLogIn(email: string, password: string) {
     const requestBody = { email, password };
     try {
         const response = await axios.post(requestUrl, requestBody);
-        console.log(response);
         return response.data;
     }
     catch (error: unknown) {
