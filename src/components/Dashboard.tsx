@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { urlsAPI } from "../services/urlsAPI";
 import "../styles/Dashboard.css";
+import UserInfo from "./UserInfo";
 
 function Dashboard() {
     const authContext = useAuthContext();
@@ -27,9 +28,8 @@ function Dashboard() {
     return (
         <div className="dashboard__container">
             <h1 className="dashboard__title">Pico URL Dashboard</h1>
-            <div>{`You have ${urlCount} URLs`}</div>
             <div className="dashboard__upper">
-                <div>User Statistics</div>
+                <UserInfo urlCount={urlCount} />
                 <div>Create a picoUrl</div>
             </div>
             <div>Display URLs paginated</div>
