@@ -22,8 +22,9 @@ function CreateForm() {
         if (originalUrl && authContext?.userDetails?.token) {
             const response = await urlsAPI.postUrl(authContext?.userDetails?.token, originalUrl);
             if (!(response as { error: string }).error) {
-                showCreateResult((response as CreateResponseInterface).status, (response as CreateResponseInterface).data.shortUrl);
+                const newDetails = handleResponse((response as CreateResponseInterface).status, (response as CreateResponseInterface).data.shortUrl);
                 setOriginalUrl("");
+                setResultDetails(newDetails);
             } else {
                 setResultDetails(
                     {
@@ -36,17 +37,24 @@ function CreateForm() {
         }
     }
 
-    function showCreateResult(status: number, shortUrl: string) {
+    function handleResponse(status: number, shortUrl: string) {
+        const newDetails: ResultDetailsInterface = {
+            isError: false,
+            message: "",
+            picoUrl: shortUrl
+        }
         switch (status) {
             case (200):
-                console.log("Pico URL already exists, this is it: ", shortUrl);
+                newDetails.message = "Pico URL already exists:";
                 break;
             case (201):
-                console.log("New PICO URL created: ", shortUrl);
+                newDetails.message = "New Pico URL created:";
                 break;
             default:
-                console.error("Unexpected status");
+                newDetails.isError = true;
+                newDetails.message = "Unexpected error";
         }
+        return newDetails;
     }
 
     function closeModal() {
