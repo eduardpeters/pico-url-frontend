@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { urlsAPI } from "../services/urlsAPI";
 import "../styles/Dashboard.css";
+import CreateForm from "./CreateForm";
 import UserInfo from "./UserInfo";
 
 function Dashboard() {
@@ -30,7 +31,7 @@ function Dashboard() {
             <h1 className="dashboard__title">Pico URL Dashboard</h1>
             <div className="dashboard__upper">
                 <UserInfo urlCount={urlCount} />
-                <div>Create a picoUrl</div>
+                <CreateForm />
             </div>
             <div>Display URLs paginated</div>
         </div>
