@@ -1,3 +1,4 @@
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { ResultDetailsInterface } from "../types/picotypes";
 import "../styles/ResultModal.css";
 
@@ -26,8 +27,8 @@ function ResultModal({ closeModal, details }: ResultModalProps) {
                 <h3 className={details?.isError ? "content__error" : "content__good"}>{details?.message}</h3>
                 {details?.picoUrl && 
                     <div className="url__container">
-                        <a href={details.picoUrl}>{details.picoUrl}</a>
-                        <button onClick={copyPicoUrl}>Copy</button>
+                        <a href={details.originalUrl} target="_blank" rel="noreferrer noopener">{details.picoUrl}</a>
+                        <ContentCopyIcon onClick={copyPicoUrl} />
                     </div>
                 }
                 <button className="modal__button" onClick={closeModal}>Alrighty!</button>

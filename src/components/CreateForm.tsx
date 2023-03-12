@@ -22,7 +22,7 @@ function CreateForm() {
         if (originalUrl && authContext?.userDetails?.token) {
             const response = await urlsAPI.postUrl(authContext?.userDetails?.token, originalUrl);
             if (!(response as { error: string }).error) {
-                const newDetails = handleResponse((response as CreateResponseInterface).status, (response as CreateResponseInterface).data.shortUrl);
+                const newDetails = handleResponse((response as CreateResponseInterface).status, (response as CreateResponseInterface).data.shortUrl, originalUrl);
                 setOriginalUrl("");
                 setResultDetails(newDetails);
             } else {
@@ -37,10 +37,11 @@ function CreateForm() {
         }
     }
 
-    function handleResponse(status: number, shortUrl: string) {
+    function handleResponse(status: number, shortUrl: string, longUrl: string, ) {
         const newDetails: ResultDetailsInterface = {
             isError: false,
             message: "",
+            originalUrl: longUrl,
             picoUrl: shortUrl
         }
         switch (status) {

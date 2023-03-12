@@ -62,3 +62,13 @@
 .url__container >a:hover {
     color: #ff79c6;
 }
+
+.url__container > svg {
+    color: #ff79c6;
+    cursor: pointer;
+    margin: 0 1rem;
+}
+
+.url__container > svg:hover {
+    transform: scale(1.2);
+}
