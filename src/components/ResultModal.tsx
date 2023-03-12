@@ -1,4 +1,5 @@
 import { ResultDetailsInterface } from "../types/picotypes";
+import "../styles/ResultModal.css";
 
 interface ResultModalProps {
     closeModal: () => void;
@@ -6,12 +7,31 @@ interface ResultModalProps {
 }
 
 function ResultModal({ closeModal, details }: ResultModalProps) {
+
+    function handleOutsideClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        if (event.target === event.currentTarget) {
+            closeModal();
+        }
+    }
+
+    function copyPicoUrl() {
+        if (details?.picoUrl) {
+            navigator.clipboard.writeText(details?.picoUrl);
+        }
+    }
+
     return (
-        <div>
-            <h3>{details?.message}</h3>
-            <p>{details?.isError ? "Not OK" : "Is OK"}</p>
-            {details?.picoUrl && <a href={details.picoUrl}>{details.picoUrl}</a>}
-            <button onClick={closeModal}>Alrighty!</button>
+        <div className="modal__container" onClick={event => handleOutsideClick(event)}>
+            <div className="modal__content">
+                <h3 className={details?.isError ? "content__error" : "content__good"}>{details?.message}</h3>
+                {details?.picoUrl && 
+                    <div className="url__container">
+                        <a href={details.picoUrl}>{details.picoUrl}</a>
+                        <button onClick={copyPicoUrl}>Copy</button>
+                    </div>
+                }
+                <button className="modal__button" onClick={closeModal}>Alrighty!</button>
+            </div>
         </div>
     );
 }
