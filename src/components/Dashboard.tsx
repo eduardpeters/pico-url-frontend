@@ -31,7 +31,7 @@ function Dashboard() {
             <h1 className="dashboard__title">Pico URL Dashboard</h1>
             <div className="dashboard__upper">
                 <UserInfo urlCount={urlCount} />
-                <CreateForm />
+                <CreateForm urlCount={urlCount} setUrlCount={setUrlCount} />
             </div>
             <div>Display URLs paginated</div>
         </div>
