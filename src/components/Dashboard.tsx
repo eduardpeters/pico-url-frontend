@@ -4,22 +4,27 @@ import { useAuthContext } from "../context/AuthContext";
 import { urlsAPI } from "../services/urlsAPI";
 import "../styles/Dashboard.css";
 import CreateForm from "./CreateForm";
+import RetryModal from "./RetryModal";
 import UserInfo from "./UserInfo";
 
 function Dashboard() {
     const authContext = useAuthContext();
     const navigate = useNavigate();
     const [urlCount, setUrlCount] = useState(0);
+    const [showRetry, setShowRetry] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         async function getUrlCount(userToken: string) {
             const response = await urlsAPI.getCount(userToken);
             if (!response.error) {
                 setUrlCount(response.count);
+            } else {
+                setErrorMessage(response.error);
+                setShowRetry(true);
             }
         }
         if (!authContext?.isLoggedIn || !authContext.userDetails?.token) {
-            console.log("User not logged in, redirecting");
             navigate("/");
         } else {
             getUrlCount(authContext.userDetails?.token);
@@ -34,6 +39,7 @@ function Dashboard() {
                 <CreateForm urlCount={urlCount} setUrlCount={setUrlCount} />
             </div>
             <div>Display URLs paginated</div>
+            {showRetry && <RetryModal closeModal={() => setShowRetry(false)} errorMessage={errorMessage} />}
         </div>
     );
 }
