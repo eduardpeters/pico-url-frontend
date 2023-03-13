@@ -1,0 +1,54 @@
+.create__container {
+    align-items: center;
+    border: 0.1rem solid#f8f8f2;
+    border-radius: 1rem;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    padding: 0.8rem;
+    text-align: center;
+    width: 40%;
+}
+
+.create__button {
+    background-color: #bd93f9;
+    border: 0.1rem solid #6272a4;
+    border-radius: 0.5rem;
+    color: #282a36;
+    font-size: 1.1rem;
+    height: 3rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    cursor: pointer;
+    width: 6rem;
+}
+
+.create__button:hover {
+    opacity: 0.8;
+}
+
+.create__input {
+    all: unset;
+    background-color: #44475a;
+    border: 0.1rem solid #6272a4;
+    color: #8be9fd;
+    height: 2rem;
+    padding: 0.5rem;
+    width: 80%;
+}
+
+.create__input:focus {
+    border-color: #ff79c6;
+}
+
+.create__input::placeholder {
+    color: #8be9fd;
+    opacity: 0.8;
+}
+
+.create__label {
+    color: #bd93f9;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}

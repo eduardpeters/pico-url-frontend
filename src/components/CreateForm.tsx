@@ -3,6 +3,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { urlsAPI } from "../services/urlsAPI";
 import ResultModal from "./ResultModal";
 import { ResultDetailsInterface } from "../types/picotypes";
+import "../styles/CreateForm.css";
 
 interface CreateFormProps {
     urlCount: number;
@@ -77,16 +78,18 @@ function CreateForm({ urlCount, setUrlCount }: CreateFormProps) {
 
     return (
         <>
-            <form onSubmit={event => handleCreateSubmit(event)}>
-                <label htmlFor="originalUrl">URL to shorten</label>
+            <form className="create__container" onSubmit={event => handleCreateSubmit(event)}>
+                <label className="create__label" htmlFor="originalUrl">Create a Pico URL</label>
                 <input
+                    className="create__input"
                     type="url"
                     id="originalUrl"
                     value={originalUrl}
                     onChange={event => setOriginalUrl(event.target.value)}
+                    placeholder="Long URL goes here!"
                     required
                 ></input>
-                <button type="submit">Minify!</button>
+                <button className="create__button" type="submit">Minify!</button>
             </form>
             {showResult && <ResultModal details={resultDetails} closeModal={closeModal} />}
         </>
