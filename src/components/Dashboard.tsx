@@ -5,6 +5,7 @@ import { urlsAPI } from "../services/urlsAPI";
 import "../styles/Dashboard.css";
 import CreateForm from "./CreateForm";
 import RetryModal from "./RetryModal";
+import UrlList from "./UrlList";
 import UserInfo from "./UserInfo";
 
 function Dashboard() {
@@ -38,7 +39,7 @@ function Dashboard() {
                 <UserInfo urlCount={urlCount} />
                 <CreateForm urlCount={urlCount} setUrlCount={setUrlCount} />
             </div>
-            <div>Display URLs paginated</div>
+            <UrlList urlCount={urlCount} setUrlCount={setUrlCount} />
             {showRetry && <RetryModal closeModal={() => setShowRetry(false)} errorMessage={errorMessage} />}
         </div>
     );
