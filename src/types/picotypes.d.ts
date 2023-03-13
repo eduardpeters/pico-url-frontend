@@ -5,7 +5,7 @@ export interface ResultDetailsInterface {
     picoUrl?: string;
 }
 
-export interface UrlEntry {
+export interface UrlInterface {
     _id: string;
     userId: string;
     originalUrl: string;

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
-import { UrlEntry } from "../types/picotypes";
+import { UrlInterface } from "../types/picotypes";
 import { urlsAPI } from "../services/urlsAPI";
+import UrlEntry from "./UrlEntry";
 
 interface UrlListProps {
     urlCount: number;
@@ -10,7 +11,7 @@ interface UrlListProps {
 
 function UrlList({ urlCount, setUrlCount }: UrlListProps) {
     const authContext = useAuthContext();
-    const [userUrls, setUserUrls] = useState<UrlEntry[]>([]);
+    const [userUrls, setUserUrls] = useState<UrlInterface[]>([]);
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -31,12 +32,11 @@ function UrlList({ urlCount, setUrlCount }: UrlListProps) {
 
     return (
         <div>
-            Display the users urls
             {
                 showError ?
                     <div>{errorMessage}</div>
                     :
-                    userUrls.map(entry => <p>{entry.shortUrl}</p>)
+                    userUrls.map(entry => <UrlEntry key={entry._id} entry={entry} />)
             }
         </div>
     );
