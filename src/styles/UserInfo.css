@@ -1,0 +1,37 @@
+.info__container {
+    align-items: flex-start;
+    background-color: #44475a;
+    border-radius: 1rem;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    padding: 1rem 3rem;
+}
+
+.info__edit {
+    color: #f1fa8c;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.info__highlight {
+    color: #50fa7b;
+    font-size: 1.2rem;
+    font-weight: bolder;
+}
+
+.info__logout {
+    align-self: center;
+    background-color: #ff5555;
+    border: 0.1rem solid #6272a4;
+    border-radius: 0.5rem;
+    color: #282a36;
+    font-size: 0.8rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.info__logout:hover {
+    opacity: 0.8;
+}
