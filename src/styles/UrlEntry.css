@@ -1,3 +1,13 @@
+.details__highlight {
+    color: #ff79c6;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.details__long {
+    color: #f1fa8c;
+}
+
 .entry__container {
     border: 0.2rem solid #282a36;
     border-radius: 1rem;
@@ -10,10 +20,8 @@
     width: 50%;
 }
 
-.entry__highlight {
-    color: #ffb86c;
-    font-size: 1.2rem;
-    font-weight: bolder;
+.entry__details {
+    text-align: center;
 }
 
 .entry__icon {
@@ -51,6 +59,16 @@
     justify-content: center;
     margin: 1rem;
     width: 100%;
+}
+
+.summary__highlight {
+    color: #ffb86c;
+    font-size: 1.2rem;
+    font-weight: bolder;
+}
+
+.summary__url {
+    color: #8be9fd;
 }
 
 .summary__pico, .summary__long {
