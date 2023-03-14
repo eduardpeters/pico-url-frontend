@@ -1,4 +1,4 @@
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { ResultDetailsInterface } from "../types/picotypes";
 import "../styles/ResultModal.css";
 

@@ -1,4 +1,36 @@
 .entry__container {
-    border: 0.1rem solid #f8f8f2;
+    border: 0.2rem solid #282a36;
     border-radius: 1rem;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    width: 80%;
+}
+
+.entry__summary {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.entry__icon {
+    color: #ff79c6;
+    font-size: 1rem;
+}
+
+.entry__icon:hover {
+    transform: scale(1.2);
+}
+
+.list__container {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    margin: 1rem;
+    width: 100%;
+}
+
+.summary__pico, .summary__long {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
 }

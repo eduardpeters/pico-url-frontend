@@ -3,6 +3,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { UrlInterface } from "../types/picotypes";
 import { urlsAPI } from "../services/urlsAPI";
 import UrlEntry from "./UrlEntry";
+import "../styles/UrlEntry.css";
 
 interface UrlListProps {
     urlCount: number;
@@ -31,7 +32,7 @@ function UrlList({ urlCount, setUrlCount }: UrlListProps) {
     }, [urlCount]);
 
     return (
-        <div>
+        <div className="list__container">
             {
                 showError ?
                     <div>{errorMessage}</div>
