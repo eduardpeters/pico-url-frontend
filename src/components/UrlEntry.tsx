@@ -2,6 +2,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LaunchIcon from "@mui/icons-material/Launch";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { UrlInterface } from "../types/picotypes";
 import "../styles/UrlEntry.css";
 import { useState } from 'react';
@@ -12,6 +13,7 @@ interface UrlEntryProps {
 
 function UrlEntry({ entry }: UrlEntryProps) {
     const [showDetails, setShowDetails] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const entryDate = new Date(entry.date);
 
     return (
@@ -36,6 +38,8 @@ function UrlEntry({ entry }: UrlEntryProps) {
                             <p>Visits: <span className="details__highlight">{entry.visits}</span></p>
                             <p>Redirects to: <span className="details__long">{entry.originalUrl}</span></p>
                             <p>Created on: {entryDate.toDateString()}</p>
+                            <DeleteForeverIcon fontSize="large" className="entry__icon entry__icon-delete" onClick={() => setShowDeleteConfirm(true)} />
+                            {showDeleteConfirm && <div>Show the modal</div>}
                         </div>
                     </>
                     :

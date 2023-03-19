@@ -27,6 +27,7 @@
 .entry__icon {
     font-size: 1rem;
     margin: 0 0.5rem;
+    cursor: pointer;
 }
 
 .entry__icon:hover {
@@ -35,6 +36,10 @@
 
 .entry__icon-copy {
     color: #ff79c6; 
+}
+
+.entry__icon-delete {
+    color: #ff5555;
 }
 
 .entry__icon-open {
