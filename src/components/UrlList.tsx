@@ -37,7 +37,15 @@ function UrlList({ urlCount, setUrlCount }: UrlListProps) {
                 showError ?
                     <div>{errorMessage}</div>
                     :
-                    userUrls.map(entry => <UrlEntry key={entry._id} entry={entry} />)
+                    userUrls.map(entry => 
+                        <UrlEntry
+                            key={entry._id}
+                            entry={entry}
+                            userToken={authContext?.userDetails?.token} 
+                            urlCount={urlCount}
+                            setUrlCount={setUrlCount}
+                        />
+                    )
             }
         </div>
     );

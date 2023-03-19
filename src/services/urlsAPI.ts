@@ -82,4 +82,4 @@ async function deleteUrl(userToken: string, shortId: string) {
     }
 }
 
-export const urlsAPI = { getOriginal, getCount, getUrls, postUrl };
+export const urlsAPI = { getOriginal, getCount, getUrls, postUrl, deleteUrl };

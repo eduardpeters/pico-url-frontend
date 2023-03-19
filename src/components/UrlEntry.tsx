@@ -1,23 +1,34 @@
+import { useState } from 'react';
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LaunchIcon from "@mui/icons-material/Launch";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { UrlInterface } from "../types/picotypes";
+import { urlsAPI } from "../services/urlsAPI";
 import "../styles/UrlEntry.css";
-import { useState } from 'react';
 
 interface UrlEntryProps {
     entry: UrlInterface;
+    userToken: string | undefined;
+    urlCount: number;
+    setUrlCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function UrlEntry({ entry }: UrlEntryProps) {
+function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
     const [showDetails, setShowDetails] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const entryDate = new Date(entry.date);
 
-    function handleUrlDelete() {
-        console.log("URL will be deleted");
+    async function handleUrlDelete() {
+        if (userToken) {
+            const response = await urlsAPI.deleteUrl(userToken, entry.shortUrl.slice(-10))
+            if ((response as { error: string }).error) {
+                console.error((response as { error: string }).error);
+            } else {
+                setUrlCount(urlCount - 1);
+            }
+        }
     }
 
     return (
