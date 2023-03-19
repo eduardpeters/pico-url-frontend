@@ -1,3 +1,37 @@
+.delete__button {
+    border: 1px solid #282a36;
+    border-radius: 0.5rem;
+    margin: 0.25rem;
+    padding: 0.25rem;
+    width: 3rem;
+}
+
+.delete__button:hover {
+    opacity: 0.8;
+}
+
+.delete__button-confirm {
+    background-color: #ff5555;
+    font-weight: bold;
+}
+
+.delete__button-cancel {
+    background-color: #f1fa8c;
+}
+
+.delete__confirmation {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.delete__text {
+    color: #ff5555;
+    font-size: large;
+    text-decoration: underline;
+}
+
 .details__highlight {
     color: #ff79c6;
     font-size: 1.1rem;
