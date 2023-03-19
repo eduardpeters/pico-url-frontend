@@ -10,7 +10,7 @@ async function getOriginal(shortId: string) {
     }
     catch (error: unknown) {
         console.error(error);
-        return {error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
     }
 }
 
@@ -27,7 +27,7 @@ async function getCount(userToken: string) {
     }
     catch (error) {
         console.error(error);
-        return {error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
     }
 }
 
@@ -44,7 +44,7 @@ async function getUrls(userToken: string) {
     }
     catch (error) {
         console.error(error);
-        return {error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
     }
 }
 
@@ -62,7 +62,23 @@ async function postUrl(userToken: string, originalUrl: string) {
     }
     catch (error) {
         console.error(error);
-        return {error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
+    }
+}
+
+async function deleteUrl(userToken: string, shortId: string) {
+    const requestUrl = `${baseUrl}urls/${shortId}`;
+    const config = {
+        headers: {
+            Authorization: `Bearer ${userToken}`
+        }
+    }
+    try {
+        const response = await axios.delete(requestUrl, config);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
     }
 }
 
