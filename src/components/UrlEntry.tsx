@@ -3,6 +3,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LaunchIcon from "@mui/icons-material/Launch";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { UrlInterface } from "../types/picotypes";
 import { urlsAPI } from "../services/urlsAPI";
@@ -17,6 +18,7 @@ interface UrlEntryProps {
 
 function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
     const [showDetails, setShowDetails] = useState(false);
+    const [toggleEdit, setToggleEdit] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const entryDate = new Date(entry.date);
 
@@ -51,7 +53,7 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                         <ExpandLessIcon fontSize="large" className="entry__icon entry__icon-details" onClick={() => setShowDetails(false)} />
                         <div className="entry__details">
                             <p>Visits: <span className="details__highlight">{entry.visits}</span></p>
-                            <p>Redirects to: <span className="details__long">{entry.originalUrl}</span></p>
+                            <p>Redirects to: <span className="details__long">{entry.originalUrl}<EditIcon className="entry__icon" /></span></p>
                             <p>Created on: {entryDate.toDateString()}</p>
                             <DeleteForeverIcon fontSize="large" className="entry__icon entry__icon-delete" onClick={() => setShowDeleteConfirm(!showDeleteConfirm)} />
                             {
