@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -19,8 +19,20 @@ interface UrlEntryProps {
 function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
     const [showDetails, setShowDetails] = useState(false);
     const [toggleEdit, setToggleEdit] = useState(false);
+    const [newUrl, setNewUrl] = useState(entry.originalUrl);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const entryDate = new Date(entry.date);
+
+    async function handleUrlEdit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        if (newUrl === entry.originalUrl) {
+            return ;
+        }
+        console.log("Ready to send")
+        if (userToken) {
+            console.log("Send Request")
+        }
+    }
 
     async function handleUrlDelete() {
         if (userToken) {
@@ -53,12 +65,22 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                         <ExpandLessIcon fontSize="large" className="entry__icon entry__icon-details" onClick={() => setShowDetails(false)} />
                         <div className="entry__details">
                             <p>Visits: <span className="details__highlight">{entry.visits}</span></p>
-                            <p>Redirects to: <span className="details__long">{entry.originalUrl}<EditIcon className="entry__icon" /></span></p>
+                            <p>Redirects to: <span className="details__long">{entry.originalUrl}<EditIcon className="entry__icon" onClick={() => setToggleEdit(!toggleEdit)} /></span></p>
+                            {
+                                toggleEdit
+                                &&
+                                <form onSubmit={event => handleUrlEdit(event)}>
+                                    <label htmlFor="url-input">New URL:</label>
+                                    <input id="url-input" type="url" value={newUrl} onChange={event => setNewUrl(event.target.value)}></input>
+                                    <button type="submit">Replace!</button>
+                                    <button type="button" onClick={() => setToggleEdit(false)}>Nevermind</button>
+                                </form>
+                            }
                             <p>Created on: {entryDate.toDateString()}</p>
                             <DeleteForeverIcon fontSize="large" className="entry__icon entry__icon-delete" onClick={() => setShowDeleteConfirm(!showDeleteConfirm)} />
                             {
-                                showDeleteConfirm 
-                                && 
+                                showDeleteConfirm
+                                &&
                                 <div className="delete__confirmation">
                                     <p className="delete__text">Delete this Pico URL?</p>
                                     <button className="delete__button delete__button-confirm" onClick={() => handleUrlDelete()}>Yep</button>
