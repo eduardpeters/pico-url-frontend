@@ -1,0 +1,43 @@
+.url__button {
+    border: 1px solid #6272a4;
+    border-radius: 0.5rem;
+    color: #282a36;
+    margin: 0 0.2rem;
+    padding: 0.2rem;
+    cursor: pointer;
+}
+
+.url__button-replace {
+    background-color: #50fa7b;
+    font-weight: bold;
+}
+
+.url__button-cancel {
+    background-color: #f1fa8c;
+}
+
+.url__form {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    text-align: center;
+}
+
+.url__input {
+    all: unset;
+    background-color: #44475a;
+    border: 1px solid #6272a4;
+    color: #8be9fd;
+    height: 1rem;
+    padding: 0.2rem;
+}
+
+.url__input::placeholder {
+    color: #8be9fd;
+    opacity: 0.8;
+}
+
+.url__label {
+    margin: 0 0.2rem;
+}
