@@ -66,6 +66,24 @@ async function postUrl(userToken: string, originalUrl: string) {
     }
 }
 
+async function patchUrl(userToken: string, shortUrl: string ,originalUrl: string) {
+    const requestUrl = `${baseUrl}urls/${shortUrl}`;
+    const requestBody = { url: originalUrl }
+    const config = {
+        headers: {
+            Authorization: `Bearer ${userToken}`
+        }
+    }
+    try {
+        const response = await axios.patch(requestUrl, requestBody, config);
+        return response;
+    }
+    catch (error) {
+        console.error(error);
+        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
+    }
+}
+
 async function deleteUrl(userToken: string, shortId: string) {
     const requestUrl = `${baseUrl}urls/${shortId}`;
     const config = {
@@ -82,4 +100,4 @@ async function deleteUrl(userToken: string, shortId: string) {
     }
 }
 
-export const urlsAPI = { getOriginal, getCount, getUrls, postUrl, deleteUrl };
+export const urlsAPI = { getOriginal, getCount, getUrls, postUrl, patchUrl, deleteUrl };

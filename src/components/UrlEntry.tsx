@@ -58,7 +58,7 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                             {
                                 toggleEdit
                                 &&
-                                <UrlEditForm originalUrl={entry.originalUrl} userToken={userToken as string} closeForm={() => setToggleEdit(false)} />
+                                <UrlEditForm shortUrl={entry.shortUrl.slice(-10)} originalUrl={entry.originalUrl} userToken={userToken as string} closeForm={() => setToggleEdit(false)} />
                             }
                             <p>Created on: {entryDate.toDateString()}</p>
                             <DeleteForeverIcon fontSize="large" className="entry__icon entry__icon-delete" onClick={() => setShowDeleteConfirm(!showDeleteConfirm)} />
