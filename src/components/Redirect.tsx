@@ -8,7 +8,7 @@ function Redirect() {
     const { shortId } = useParams();
     const navigate = useNavigate();
     const [originalUrl, setOriginalUrl] = useState("");
-    const timer = useRef<NodeJS.Timeout | null>(null);
+    const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ function Redirect() {
         else {
             setShowErrorMessage(true);
         }
-        return () => clearTimeout(timer.current as NodeJS.Timeout);
+        return () => clearTimeout(timer.current as ReturnType<typeof setTimeout>);
     }, []);
 
     return (

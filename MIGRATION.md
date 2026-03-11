@@ -7,23 +7,38 @@ starting the next. Phases 4 and 5 can run in parallel once Phase 3 is done.
 
 ## Phase 1 — CRA → Vite
 
-**Status:** pending
+**Status:** complete
 
-**Goal:** Replace the unmaintained Create React App toolchain with Vite.
+**Goal:** Replace the unmaintained Create React App toolchain with Vite. Includes the
+TypeScript 5.x upgrade (pulled forward from Phase 2) because `"moduleResolution": "bundler"`
+requires TypeScript ≥ 5.0.
 
 **Packages:**
-- Remove: `react-scripts`
-- Add: `vite`, `@vitejs/plugin-react`
+- Remove: `react-scripts`, `web-vitals`, `@types/jest`
+- Add: `vite`, `@vitejs/plugin-react`, `typescript@^5.7`
 - Add (testing): `vitest`, `@vitest/ui`, `jsdom`, `@testing-library/jest-dom` (latest),
   `@testing-library/react` (latest), `@testing-library/user-event` (latest)
 
 **Files to create:**
-- `vite.config.ts` — React plugin, dev server port 3000
+- `vite.config.ts` — React plugin, dev server port 3000, vitest config:
+  ```ts
+  import { defineConfig } from "vite";
+  import react from "@vitejs/plugin-react";
+
+  export default defineConfig({
+      plugins: [react()],
+      server: { port: 3000 },
+      test: {
+          environment: "jsdom",
+          globals: true,
+      },
+  });
+  ```
 - `src/vite-env.d.ts` — `/// <reference types="vite/client" />`
 
 **Files to modify:**
-- `public/index.html` → move to project root; replace the static bundle script tag with
-  `<script type="module" src="/src/index.tsx">`
+- `public/index.html` → move to project root; add
+  `<script type="module" src="/src/index.tsx"></script>` before `</body>`
 - `tsconfig.json` — set `"moduleResolution": "bundler"`, add `"types": ["vite/client"]`
 - `package.json` — replace scripts:
   ```json
@@ -34,7 +49,7 @@ starting the next. Phases 4 and 5 can run in parallel once Phase 3 is done.
   "test":    "vitest"
   ```
 - All usages of `process.env.REACT_APP_API_URL` → `import.meta.env.VITE_API_URL`
-  (only in `src/services/urlsAPI.ts` and `src/services/authAPI.ts`)
+  (in `src/services/urlsAPI.ts`, `src/services/authAPI.ts`, and `src/services/usersAPI.ts`)
 - `.env` files (if any): rename `REACT_APP_API_URL` → `VITE_API_URL`
 
 **Files to delete:**
@@ -42,7 +57,11 @@ starting the next. Phases 4 and 5 can run in parallel once Phase 3 is done.
 
 **Notes:**
 - No existing tests to migrate (Vitest API is Jest-compatible, zero effort).
-- `web-vitals` can be removed — it is a CRA-era dependency not used in the app logic.
+- `@types/jest` must be removed — its globals (`describe`, `expect`, etc.) conflict with
+  Vitest's own type declarations.
+- `test.globals: true` in vite.config.ts makes Vitest's globals available without explicit
+  imports, maintaining Jest-compatible test authoring style.
+- `test.environment: "jsdom"` is required for React component tests.
 
 ---
 
@@ -54,7 +73,8 @@ starting the next. Phases 4 and 5 can run in parallel once Phase 3 is done.
 
 | Package | From | To |
 |---|---|---|
-| `typescript` | 4.9.5 | 5.7+ |
+| `typescript` | 4.9.5 | 5.7+ | ← **done in Phase 1** |
+| `@types/node` | 16.x | latest | ← **done in Phase 1** |
 | `react` / `react-dom` | 18.2 | 18.3+ |
 | `@types/react` / `@types/react-dom` | 18.0.x | latest |
 | `@types/node` | 16.x | latest |
