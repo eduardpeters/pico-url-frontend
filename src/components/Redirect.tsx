@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router";
 import { urlsAPI } from "../services/urlsAPI";
 import styles from "../styles/general.module.css";
 import "../styles/Redirect.css";

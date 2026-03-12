@@ -67,22 +67,36 @@ requires TypeScript ≥ 5.0.
 
 ## Phase 2 — Dependency Upgrades
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Bring all packages to current stable versions.
 
-| Package | From | To |
-|---|---|---|
-| `typescript` | 4.9.5 | 5.7+ | ← **done in Phase 1** |
-| `@types/node` | 16.x | latest | ← **done in Phase 1** |
-| `react` / `react-dom` | 18.2 | 18.3+ |
-| `@types/react` / `@types/react-dom` | 18.0.x | latest |
-| `@types/node` | 16.x | latest |
-| `react-router-dom` | 6.8.1 | 6.28+ |
-| `axios` | 1.3.4 | 1.7+ |
-| `web-vitals` | 2.x | **remove** |
+| Package | From | To | Actual |
+|---|---|---|---|
+| `typescript` | 4.9.5 | 5.7+ | 5.9.3 — done in Phase 1 |
+| `@types/node` | 16.x | latest | 25.4.0 — done in Phase 1 |
+| `react` / `react-dom` | 18.2 | 18.3+ | **19.2.4** (upgraded to latest major) |
+| `@types/react` / `@types/react-dom` | 18.0.x | latest | **19.2.14 / 19.2.3** |
+| `react-router-dom` | 6.8.1 | 6.28+ | **removed** — replaced by `react-router@7.13.1` (see below) |
+| `axios` | 1.3.4 | 1.7+ | **1.13.6** |
+| `web-vitals` | 2.x | remove | already absent (removed in Phase 1) |
 
-No API-level breaking changes are expected for any of these version bumps.
+**React 19:** The original plan targeted 18.3+, but React 19 was chosen instead. No hard
+breaking changes exist in the codebase (none of the removed APIs — `render()`, `forwardRef`,
+`defaultProps`, `findDOMNode`, `propTypes`, string refs — are used). The stale default import
+`import React from 'react'` in `src/index.tsx` was replaced with `import { StrictMode } from "react"`.
+
+**React Router v7:** Rather than stopping at 6.28+, the `react-router-dom` package was
+uninstalled and replaced with `react-router@7.13.1`. In v7 the two packages are consolidated;
+`react-router` is the only package needed. All imports across 11 files were updated from
+`from "react-router-dom"` → `from "react-router"`. No functional API changes were required
+(`BrowserRouter`, `Routes`, `Route`, `useNavigate`, `useParams`, `useLocation`, `Link` are
+all identical in v7 declarative mode).
+
+**`--legacy-peer-deps` note:** MUI 5.x (still present; removed in Phase 4) declares peer
+deps of `react@"^17||^18"` and `@types/react@"^17||^18"`. While MUI remains in the project,
+any `npm install` that touches the dependency tree must use `--legacy-peer-deps` to bypass
+this stale constraint. This flag is no longer needed after Phase 4 removes MUI.
 
 ---
 
@@ -137,6 +151,10 @@ lightweight tree-shakeable `lucide-react` icon library.
 **Packages:**
 - Remove: `@mui/icons-material`, `@mui/material`, `@emotion/react`, `@emotion/styled`
 - Add: `lucide-react`
+
+Use `--legacy-peer-deps` for the remove step since MUI 5.x has stale peer dep constraints
+against React 19 / `@types/react@19`. After MUI is removed this flag is no longer needed
+for any subsequent installs.
 
 **Only file affected:** `src/components/UrlEntry.tsx`
 
@@ -282,6 +300,8 @@ created in Phase 5)
 - Commands: `npm run dev` (dev server), `npm run preview`, `npm run lint`, `npm run format`
 - Test commands: `vitest` instead of `jest` / `react-scripts test`
 - Env vars: `VITE_API_URL` instead of `REACT_APP_API_URL`
+- Router import: `from "react-router"` (not `"react-router-dom"`) — package was consolidated in v7
+- Icon imports: `lucide-react` (not `@mui/icons-material`) — see Phase 4 substitution map
 - Service layer: functions now throw; no more `{ error }` return objects
 - TanStack Query patterns: query keys, mutation + invalidation pattern
 - Auth context: `logout()` helper, `isLoggedIn` is derived, localStorage persistence

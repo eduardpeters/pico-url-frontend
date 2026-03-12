@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { usersAPI } from "../services/usersAPI";
 import styles from "../styles/general.module.css";
 import "../styles/Register.css";

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import RedirectForm from "./RedirectForm";
 import styles from "../styles/general.module.css";
 import "../styles/Root.css";

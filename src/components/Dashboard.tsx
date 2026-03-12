@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
 import { urlsAPI } from "../services/urlsAPI";
 import "../styles/Dashboard.css";
