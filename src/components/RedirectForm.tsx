@@ -8,12 +8,13 @@ function RedirectForm() {
 
     function handleRedirectSubmit(event: React.FormEvent) {
         event.preventDefault();
-        const shortUrl = inputValue.length === 10 ? inputValue : inputValue.substring(inputValue.length - 10);
+        const shortUrl =
+            inputValue.length === 10 ? inputValue : inputValue.substring(inputValue.length - 10);
         navigate(`/${shortUrl}`);
     }
 
     return (
-        <form className="redirect__container" onSubmit={event => handleRedirectSubmit(event)}>
+        <form className="redirect__container" onSubmit={(event) => handleRedirectSubmit(event)}>
             <input
                 className="redirect__input"
                 type="text"
@@ -21,11 +22,13 @@ function RedirectForm() {
                 placeholder="p1C0_uRL!!"
                 required
                 value={inputValue}
-                onChange={event => setInputValue(event.target.value)}
+                onChange={(event) => setInputValue(event.target.value)}
             ></input>
-            <button className="redirect__button" type="submit">Magnify!</button>
+            <button className="redirect__button" type="submit">
+                Magnify!
+            </button>
         </form>
-    )
+    );
 }
 
 export default RedirectForm;

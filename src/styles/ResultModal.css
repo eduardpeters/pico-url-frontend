@@ -45,7 +45,9 @@
     width: 6rem;
 }
 
-.modal__button:hover, .modal__button-exit:hover, .modal__button-retry:hover {
+.modal__button:hover,
+.modal__button-exit:hover,
+.modal__button-retry:hover {
     opacity: 0.8;
 }
 
@@ -86,7 +88,7 @@
     text-decoration: none;
 }
 
-.url__container >a:hover {
+.url__container > a:hover {
     color: #ff79c6;
 }
 

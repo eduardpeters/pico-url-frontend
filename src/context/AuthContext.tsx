@@ -12,12 +12,11 @@ interface AuthContextInterface {
     setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
     userDetails: UserDetailsInterface | null;
     setUserDetails: React.Dispatch<React.SetStateAction<UserDetailsInterface | null>>;
-
 }
 
 const AuthContext = createContext<AuthContextInterface | null>(null);
 
-export function AuthContextProvider({ children }: { children: ReactNode}) {
+export function AuthContextProvider({ children }: { children: ReactNode }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userDetails, setUserDetails] = useState<UserDetailsInterface | null>(null);
 

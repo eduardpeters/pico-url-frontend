@@ -8,10 +8,9 @@ async function postLogIn(email: string, password: string) {
     try {
         const response = await axios.post(requestUrl, requestBody);
         return response.data;
-    }
-    catch (error: unknown) {
+    } catch (error: unknown) {
         console.error(error);
-        return {error: (error as AxiosError).response?.data || (error as AxiosError).message };
+        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
     }
 }
 
