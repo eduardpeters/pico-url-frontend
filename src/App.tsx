@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router";
-import Dashboard from './components/Dashboard';
-import Login from './components/Login';
-import NotFound from './components/NotFound';
-import Redirect from './components/Redirect';
-import Register from './components/Register';
-import Root from './components/Root';
-import { AuthContextProvider } from './context/AuthContext';
+import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import NotFound from "./components/NotFound";
+import Redirect from "./components/Redirect";
+import Register from "./components/Register";
+import Root from "./components/Root";
+import { AuthContextProvider } from "./context/AuthContext";
 
 function App() {
     return (

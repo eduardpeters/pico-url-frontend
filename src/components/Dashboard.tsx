@@ -30,7 +30,7 @@ function Dashboard() {
         } else {
             getUrlCount(authContext.userDetails?.token);
         }
-    }, []);
+    }, [authContext?.isLoggedIn, authContext?.userDetails?.token, navigate]);
 
     return (
         <div className="dashboard__container">
@@ -40,7 +40,9 @@ function Dashboard() {
                 <CreateForm urlCount={urlCount} setUrlCount={setUrlCount} />
             </div>
             <UrlList urlCount={urlCount} setUrlCount={setUrlCount} />
-            {showRetry && <RetryModal closeModal={() => setShowRetry(false)} errorMessage={errorMessage} />}
+            {showRetry && (
+                <RetryModal closeModal={() => setShowRetry(false)} errorMessage={errorMessage} />
+            )}
         </div>
     );
 }

@@ -69,7 +69,7 @@
 }
 
 .entry__icon-copy {
-    color: #ff79c6; 
+    color: #ff79c6;
 }
 
 .entry__icon-delete {
@@ -77,11 +77,11 @@
 }
 
 .entry__icon-open {
-    color: #50fa7b; 
+    color: #50fa7b;
 }
 
 .entry__icon-details {
-    color: #f1fa8c; 
+    color: #f1fa8c;
 }
 
 .entry__summary {
@@ -110,7 +110,8 @@
     color: #8be9fd;
 }
 
-.summary__pico, .summary__long {
+.summary__pico,
+.summary__long {
     align-items: center;
     display: flex;
     flex-flow: row wrap;

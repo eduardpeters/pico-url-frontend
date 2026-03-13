@@ -29,24 +29,23 @@ function UrlList({ urlCount, setUrlCount }: UrlListProps) {
         if (authContext?.isLoggedIn && authContext.userDetails?.token) {
             getUserUrls(authContext.userDetails?.token);
         }
-    }, [urlCount]);
+    }, [urlCount, authContext?.isLoggedIn, authContext?.userDetails?.token]);
 
     return (
         <div className="list__container">
-            {
-                showError ?
-                    <div>{errorMessage}</div>
-                    :
-                    userUrls.map(entry => 
-                        <UrlEntry
-                            key={entry._id}
-                            entry={entry}
-                            userToken={authContext?.userDetails?.token} 
-                            urlCount={urlCount}
-                            setUrlCount={setUrlCount}
-                        />
-                    )
-            }
+            {showError ? (
+                <div>{errorMessage}</div>
+            ) : (
+                userUrls.map((entry) => (
+                    <UrlEntry
+                        key={entry._id}
+                        entry={entry}
+                        userToken={authContext?.userDetails?.token}
+                        urlCount={urlCount}
+                        setUrlCount={setUrlCount}
+                    />
+                ))
+            )}
         </div>
     );
 }

@@ -14,48 +14,55 @@ TypeScript 5.x upgrade (pulled forward from Phase 2) because `"moduleResolution"
 requires TypeScript ≥ 5.0.
 
 **Packages:**
+
 - Remove: `react-scripts`, `web-vitals`, `@types/jest`
 - Add: `vite`, `@vitejs/plugin-react`, `typescript@^5.7`
 - Add (testing): `vitest`, `@vitest/ui`, `jsdom`, `@testing-library/jest-dom` (latest),
   `@testing-library/react` (latest), `@testing-library/user-event` (latest)
 
 **Files to create:**
-- `vite.config.ts` — React plugin, dev server port 3000, vitest config:
-  ```ts
-  import { defineConfig } from "vite";
-  import react from "@vitejs/plugin-react";
 
-  export default defineConfig({
-      plugins: [react()],
-      server: { port: 3000 },
-      test: {
-          environment: "jsdom",
-          globals: true,
-      },
-  });
-  ```
+- `vite.config.ts` — React plugin, dev server port 3000, vitest config:
+
+    ```ts
+    import { defineConfig } from "vite";
+    import react from "@vitejs/plugin-react";
+
+    export default defineConfig({
+        plugins: [react()],
+        server: { port: 3000 },
+        test: {
+            environment: "jsdom",
+            globals: true,
+        },
+    });
+    ```
+
 - `src/vite-env.d.ts` — `/// <reference types="vite/client" />`
 
 **Files to modify:**
+
 - `public/index.html` → move to project root; add
   `<script type="module" src="/src/index.tsx"></script>` before `</body>`
 - `tsconfig.json` — set `"moduleResolution": "bundler"`, add `"types": ["vite/client"]`
 - `package.json` — replace scripts:
-  ```json
-  "dev":     "vite",
-  "start":   "vite",
-  "build":   "vite build",
-  "preview": "vite preview",
-  "test":    "vitest"
-  ```
+    ```json
+    "dev":     "vite",
+    "start":   "vite",
+    "build":   "vite build",
+    "preview": "vite preview",
+    "test":    "vitest"
+    ```
 - All usages of `process.env.REACT_APP_API_URL` → `import.meta.env.VITE_API_URL`
   (in `src/services/urlsAPI.ts`, `src/services/authAPI.ts`, and `src/services/usersAPI.ts`)
 - `.env` files (if any): rename `REACT_APP_API_URL` → `VITE_API_URL`
 
 **Files to delete:**
+
 - `src/react-app-env.d.ts`
 
 **Notes:**
+
 - No existing tests to migrate (Vitest API is Jest-compatible, zero effort).
 - `@types/jest` must be removed — its globals (`describe`, `expect`, etc.) conflict with
   Vitest's own type declarations.
@@ -71,15 +78,15 @@ requires TypeScript ≥ 5.0.
 
 **Goal:** Bring all packages to current stable versions.
 
-| Package | From | To | Actual |
-|---|---|---|---|
-| `typescript` | 4.9.5 | 5.7+ | 5.9.3 — done in Phase 1 |
-| `@types/node` | 16.x | latest | 25.4.0 — done in Phase 1 |
-| `react` / `react-dom` | 18.2 | 18.3+ | **19.2.4** (upgraded to latest major) |
-| `@types/react` / `@types/react-dom` | 18.0.x | latest | **19.2.14 / 19.2.3** |
-| `react-router-dom` | 6.8.1 | 6.28+ | **removed** — replaced by `react-router@7.13.1` (see below) |
-| `axios` | 1.3.4 | 1.7+ | **1.13.6** |
-| `web-vitals` | 2.x | remove | already absent (removed in Phase 1) |
+| Package                             | From   | To     | Actual                                                      |
+| ----------------------------------- | ------ | ------ | ----------------------------------------------------------- |
+| `typescript`                        | 4.9.5  | 5.7+   | 5.9.3 — done in Phase 1                                     |
+| `@types/node`                       | 16.x   | latest | 25.4.0 — done in Phase 1                                    |
+| `react` / `react-dom`               | 18.2   | 18.3+  | **19.2.4** (upgraded to latest major)                       |
+| `@types/react` / `@types/react-dom` | 18.0.x | latest | **19.2.14 / 19.2.3**                                        |
+| `react-router-dom`                  | 6.8.1  | 6.28+  | **removed** — replaced by `react-router@7.13.1` (see below) |
+| `axios`                             | 1.3.4  | 1.7+   | **1.13.6**                                                  |
+| `web-vitals`                        | 2.x    | remove | already absent (removed in Phase 1)                         |
 
 **React 19:** The original plan targeted 18.3+, but React 19 was chosen instead. No hard
 breaking changes exist in the codebase (none of the removed APIs — `render()`, `forwardRef`,
@@ -102,42 +109,75 @@ this stale constraint. This flag is no longer needed after Phase 4 removes MUI.
 
 ## Phase 3 — ESLint Flat Config + Prettier
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Replace the implicit CRA ESLint setup with an explicit, strict config and add
 Prettier for consistent formatting.
 
-**Packages to add:**
-- `eslint`, `@eslint/js`, `typescript-eslint`
-- `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`
-- `eslint-config-prettier`
-- `prettier`
+**Packages added (all `devDependencies`):**
 
-**Files to create:**
-- `eslint.config.js` — ESLint 9 flat config; TypeScript + React + hooks + a11y rules,
-  `eslint-config-prettier` last to disable formatting rules
-- `.prettierrc` — match existing code style:
-  ```json
-  {
-    "semi": true,
-    "singleQuote": false,
-    "tabWidth": 4,
-    "trailingComma": "es5",
-    "printWidth": 100
-  }
-  ```
+| Package                     | Version |
+| --------------------------- | ------- |
+| `eslint`                    | 10.0.3  |
+| `@eslint/js`                | 10.0.1  |
+| `typescript-eslint`         | 8.57.0  |
+| `eslint-plugin-react`       | 7.37.5  |
+| `eslint-plugin-react-hooks` | 7.0.1   |
+| `eslint-plugin-jsx-a11y`    | 6.10.2  |
+| `eslint-config-prettier`    | 10.1.8  |
+| `prettier`                  | 3.8.1   |
+
+**Files created:**
+
+- `eslint.config.mjs` — ESLint flat config (note: `.mjs` extension, not `.js`):
+
+    ```js
+    import js from "@eslint/js";
+    import tseslint from "typescript-eslint";
+    import reactPlugin from "eslint-plugin-react";
+    import reactHooksPlugin from "eslint-plugin-react-hooks";
+    import jsxA11y from "eslint-plugin-jsx-a11y";
+    import prettier from "eslint-config-prettier";
+
+    export default tseslint.config(
+        js.configs.recommended,
+        tseslint.configs.recommended,
+        reactPlugin.configs.flat.recommended,
+        reactPlugin.configs.flat["jsx-runtime"], // disables react/react-in-jsx-scope
+        reactHooksPlugin.configs.flat["recommended-latest"],
+        jsxA11y.flatConfigs.recommended,
+        { settings: { react: { version: "19.0" } } },
+        prettier // must be last — disables conflicting formatting rules
+    );
+    ```
+
+- `.prettierrc` — as planned:
+    ```json
+    {
+        "semi": true,
+        "singleQuote": false,
+        "tabWidth": 4,
+        "trailingComma": "es5",
+        "printWidth": 100
+    }
+    ```
 - `.prettierignore` — `build/`, `dist/`, `node_modules/`
 
-**`package.json` scripts to add:**
-```json
-"lint":   "eslint src --max-warnings 0",
-"format": "prettier --write src"
-```
+**`package.json` changes:**
 
-**After setup:** run `npm run format` once to normalize all existing files (fixes the
-single-quote inconsistency in `App.tsx` and minor whitespace issues).
+- Scripts `lint` and `format` added as planned
+- `"eslintConfig"` key removed (was already absent — cleaned up during Phase 1/2)
 
-Remove the `"eslintConfig"` key from `package.json` — it is superseded by `eslint.config.js`.
+**Adjustments vs plan:**
+
+- Config file uses `.mjs` extension (`eslint.config.mjs`) to avoid CommonJS/ESM ambiguity
+  in the project's module context.
+- `reactPlugin.configs.flat["jsx-runtime"]` spread added alongside
+  `reactPlugin.configs.flat.recommended` — this disables the `react/react-in-jsx-scope`
+  rule, which is required when using React 19's new JSX transform (no `import React` needed
+  in JSX files).
+- `react.version` pinned to `"19.0"` in the settings object rather than `"detect"` to
+  avoid a runtime `require("react")` call during linting.
 
 ---
 
@@ -149,6 +189,7 @@ Remove the `"eslintConfig"` key from `package.json` — it is superseded by `esl
 lightweight tree-shakeable `lucide-react` icon library.
 
 **Packages:**
+
 - Remove: `@mui/icons-material`, `@mui/material`, `@emotion/react`, `@emotion/styled`
 - Add: `lucide-react`
 
@@ -160,14 +201,14 @@ for any subsequent installs.
 
 Icon substitution map:
 
-| MUI import | lucide-react import |
-|---|---|
-| `ContentCopyIcon` | `Copy` |
-| `ExpandLessIcon` | `ChevronUp` |
-| `ExpandMoreIcon` | `ChevronDown` |
-| `LaunchIcon` | `ExternalLink` |
-| `EditIcon` | `Pencil` |
-| `DeleteForeverIcon` | `Trash2` |
+| MUI import          | lucide-react import |
+| ------------------- | ------------------- |
+| `ContentCopyIcon`   | `Copy`              |
+| `ExpandLessIcon`    | `ChevronUp`         |
+| `ExpandMoreIcon`    | `ChevronDown`       |
+| `LaunchIcon`        | `ExternalLink`      |
+| `EditIcon`          | `Pencil`            |
+| `DeleteForeverIcon` | `Trash2`            |
 
 Lucide icons accept `size`, `strokeWidth`, and `className` props directly — existing CSS
 classes on the icons require no changes.
@@ -183,23 +224,26 @@ shared Axios instance with a request interceptor. Also update service functions 
 on error (instead of returning `{ error }` objects) so TanStack Query can own error state.
 
 **Files to create:**
+
 - `src/services/api.ts` — shared Axios instance:
-  ```ts
-  import axios from "axios";
 
-  const api = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+    ```ts
+    import axios from "axios";
 
-  api.interceptors.request.use((config) => {
-      const stored = localStorage.getItem("auth");
-      const token = stored ? JSON.parse(stored).token : null;
-      if (token) config.headers.Authorization = `Bearer ${token}`;
-      return config;
-  });
+    const api = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 
-  export default api;
-  ```
+    api.interceptors.request.use((config) => {
+        const stored = localStorage.getItem("auth");
+        const token = stored ? JSON.parse(stored).token : null;
+        if (token) config.headers.Authorization = `Bearer ${token}`;
+        return config;
+    });
+
+    export default api;
+    ```
 
 **Files to modify:**
+
 - `src/services/urlsAPI.ts` — import `api` instead of `axios`; remove `userToken`
   parameter from all functions; replace try/catch error-object returns with `throw`
 - `src/services/authAPI.ts` — same treatment
@@ -223,29 +267,31 @@ prop-drilling chain** that runs through `Dashboard` → `CreateForm` / `UrlList`
 (it exists solely to trigger refetches, which TQ handles via `invalidateQueries`).
 
 **Packages:**
+
 - Add: `@tanstack/react-query` (v5), `@tanstack/react-query-devtools`
 
 **Files to create — `src/hooks/`:**
 
 - `useUrlsQuery.ts`
-  ```ts
-  useQuery({ queryKey: ["urls"], queryFn: urlsAPI.getUrls })
-  ```
+    ```ts
+    useQuery({ queryKey: ["urls"], queryFn: urlsAPI.getUrls });
+    ```
 - `useUrlCountQuery.ts`
-  ```ts
-  useQuery({ queryKey: ["urlCount"], queryFn: urlsAPI.getCount })
-  ```
+    ```ts
+    useQuery({ queryKey: ["urlCount"], queryFn: urlsAPI.getCount });
+    ```
 - `useCreateUrlMutation.ts`
-  ```ts
-  useMutation({
-      mutationFn: (originalUrl: string) => urlsAPI.postUrl(originalUrl),
-      onSuccess: () => queryClient.invalidateQueries({ queryKey: ["urls"] }),
-  })
-  ```
+    ```ts
+    useMutation({
+        mutationFn: (originalUrl: string) => urlsAPI.postUrl(originalUrl),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["urls"] }),
+    });
+    ```
 - `useDeleteUrlMutation.ts` — same pattern, invalidates `["urls"]`
 - `useUpdateUrlMutation.ts` — same pattern, invalidates `["urls"]`
 
 **Files to modify:**
+
 - `src/App.tsx` — wrap `<Routes>` in `<QueryClientProvider client={queryClient}>`;
   add `<ReactQueryDevtools />` inside (rendered only in dev)
 - `src/components/Dashboard.tsx` — replace `useEffect` + `urlCount` state with
@@ -273,12 +319,13 @@ simplify the context by deriving `isLoggedIn` from `userDetails` rather than sto
 as a separate, potentially-inconsistent boolean.
 
 **Files to modify:**
+
 - `src/context/AuthContext.tsx`:
-  - On mount: read `localStorage.getItem("auth")`, JSON-parse and hydrate `userDetails`
-  - Replace `isLoggedIn` `useState` with a derived boolean: `const isLoggedIn = userDetails !== null`
-  - Whenever `userDetails` is set/cleared, sync to localStorage via `useEffect`
-  - Add a `logout()` helper that calls `setUserDetails(null)` (localStorage is cleared
-    by the effect above)
+    - On mount: read `localStorage.getItem("auth")`, JSON-parse and hydrate `userDetails`
+    - Replace `isLoggedIn` `useState` with a derived boolean: `const isLoggedIn = userDetails !== null`
+    - Whenever `userDetails` is set/cleared, sync to localStorage via `useEffect`
+    - Add a `logout()` helper that calls `setUserDetails(null)` (localStorage is cleared
+      by the effect above)
 - `src/components/Login.tsx` — remove `setIsLoggedIn(true)` call (derived now)
 - `src/components/Register.tsx` — same
 - `src/components/Dashboard.tsx` — replace `navigate("/")` guard with a check on
@@ -297,6 +344,7 @@ created in Phase 5)
 **Goal:** Keep the developer guide accurate after all the above changes.
 
 **Updates needed:**
+
 - Commands: `npm run dev` (dev server), `npm run preview`, `npm run lint`, `npm run format`
 - Test commands: `vitest` instead of `jest` / `react-scripts test`
 - Env vars: `VITE_API_URL` instead of `REACT_APP_API_URL`
