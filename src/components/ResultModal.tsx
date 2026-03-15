@@ -1,4 +1,4 @@
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { Copy } from "lucide-react";
 import { ResultDetailsInterface } from "../types/picotypes";
 import "../styles/ResultModal.css";
 
@@ -21,7 +21,11 @@ function ResultModal({ closeModal, details }: ResultModalProps) {
     }
 
     return (
-        <div className="modal__container" role="presentation" onClick={(event) => handleOutsideClick(event)}>
+        <div
+            className="modal__container"
+            role="presentation"
+            onClick={(event) => handleOutsideClick(event)}
+        >
             <div className="modal__content">
                 <h3 className={details?.isError ? "content__error" : "content__good"}>
                     {details?.message}
@@ -31,7 +35,7 @@ function ResultModal({ closeModal, details }: ResultModalProps) {
                         <a href={details.originalUrl} target="_blank" rel="noreferrer noopener">
                             {details.picoUrl}
                         </a>
-                        <ContentCopyIcon onClick={copyPicoUrl} />
+                        <Copy onClick={copyPicoUrl} />
                     </div>
                 )}
                 <button className="modal__button" onClick={closeModal}>

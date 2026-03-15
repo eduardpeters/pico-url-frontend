@@ -103,7 +103,9 @@ all identical in v7 declarative mode).
 **`--legacy-peer-deps` note:** MUI 5.x (still present; removed in Phase 4) declares peer
 deps of `react@"^17||^18"` and `@types/react@"^17||^18"`. While MUI remains in the project,
 any `npm install` that touches the dependency tree must use `--legacy-peer-deps` to bypass
-this stale constraint. This flag is no longer needed after Phase 4 removes MUI.
+this stale constraint. After Phase 4 removes MUI, `eslint-plugin-jsx-a11y@6.10.2` became
+the new source of the constraint (its peer dep range excludes eslint v10). This flag
+remains necessary for any `npm install` until `eslint-plugin-jsx-a11y` is updated.
 
 ---
 
@@ -183,7 +185,7 @@ Prettier for consistent formatting.
 
 ## Phase 4 — MUI → lucide-react
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Drop the heavy MUI/Emotion stack (used only for icons) in favour of the
 lightweight tree-shakeable `lucide-react` icon library.
@@ -191,27 +193,41 @@ lightweight tree-shakeable `lucide-react` icon library.
 **Packages:**
 
 - Remove: `@mui/icons-material`, `@mui/material`, `@emotion/react`, `@emotion/styled`
-- Add: `lucide-react`
+  (57 transitive deps removed)
+- Add: `lucide-react@0.577.0`
 
-Use `--legacy-peer-deps` for the remove step since MUI 5.x has stale peer dep constraints
-against React 19 / `@types/react@19`. After MUI is removed this flag is no longer needed
-for any subsequent installs.
+`--legacy-peer-deps` was required for both the remove and install steps. The original
+plan assumed this flag would only be needed for the remove step (due to MUI 5.x's stale
+peer dep constraints against React 19 / `@types/react@19`). However, after MUI was
+removed a second stale constraint was revealed: `eslint-plugin-jsx-a11y@6.10.2` declares
+a peer dep range of `eslint@"^3 || ... || ^9"` which excludes eslint v10. Until
+`eslint-plugin-jsx-a11y` is updated, `--legacy-peer-deps` remains necessary for any
+`npm install` that touches the dependency tree.
 
-**Only file affected:** `src/components/UrlEntry.tsx`
+**Files affected:** `src/components/UrlEntry.tsx`, `src/components/ResultModal.tsx`
+
+`ResultModal.tsx` was not listed in the original plan but also imported `ContentCopyIcon`
+from `@mui/icons-material` and required the same substitution.
 
 Icon substitution map:
 
-| MUI import          | lucide-react import |
-| ------------------- | ------------------- |
-| `ContentCopyIcon`   | `Copy`              |
-| `ExpandLessIcon`    | `ChevronUp`         |
-| `ExpandMoreIcon`    | `ChevronDown`       |
-| `LaunchIcon`        | `ExternalLink`      |
-| `EditIcon`          | `Pencil`            |
-| `DeleteForeverIcon` | `Trash2`            |
+| MUI import          | lucide-react import | `size` prop |
+| ------------------- | ------------------- | ----------- |
+| `ContentCopyIcon`   | `Copy`              | `16`        |
+| `ExpandLessIcon`    | `ChevronUp`         | `35`        |
+| `ExpandMoreIcon`    | `ChevronDown`       | `35`        |
+| `LaunchIcon`        | `ExternalLink`      | `16`        |
+| `EditIcon`          | `Pencil`            | `16`        |
+| `DeleteForeverIcon` | `Trash2`            | `35`        |
 
-Lucide icons accept `size`, `strokeWidth`, and `className` props directly — existing CSS
-classes on the icons require no changes.
+MUI icons are sized by CSS `font-size`; the `.entry__icon` rule sets `font-size: 1rem`
+(~16px). Lucide icons are sized by their `size` prop (width/height) and ignore
+`font-size`. Explicit `size` props were added to all icons to preserve the existing
+visual appearance: `size={16}` for inline icons (matching `1rem`), `size={35}` for the
+expand/delete icons (matching MUI's `fontSize="large"` = 35px).
+
+`ResultModal`'s `Copy` icon carries no explicit `size` prop — both MUI and Lucide
+default to 24px for that usage.
 
 ---
 
