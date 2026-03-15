@@ -1,10 +1,5 @@
 import { useState } from "react";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import LaunchIcon from "@mui/icons-material/Launch";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Copy, ChevronUp, ChevronDown, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import UrlEditForm from "./UrlEditForm";
 import { UrlInterface } from "../types/picotypes";
 import { urlsAPI } from "../services/urlsAPI";
@@ -42,7 +37,8 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                         Pico:{" "}
                         <span className="summary__highlight">{entry.shortUrl.slice(-10)}</span>
                     </h3>
-                    <ContentCopyIcon
+                    <Copy
+                        size={16}
                         className="entry__icon entry__icon-copy"
                         onClick={() => navigator.clipboard.writeText(entry.shortUrl)}
                     />
@@ -55,14 +51,14 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                         </span>
                     </h4>
                     <a href={entry.originalUrl} target="_blank" rel="noreferrer noopener">
-                        <LaunchIcon className="entry__icon entry__icon-open" />
+                        <ExternalLink size={16} className="entry__icon entry__icon-open" />
                     </a>
                 </div>
             </div>
             {showDetails ? (
                 <>
-                    <ExpandLessIcon
-                        fontSize="large"
+                    <ChevronUp
+                        size={35}
                         className="entry__icon entry__icon-details"
                         onClick={() => setShowDetails(false)}
                     />
@@ -74,7 +70,8 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                             Redirects to:{" "}
                             <span className="details__long">
                                 {entry.originalUrl}
-                                <EditIcon
+                                <Pencil
+                                    size={16}
                                     className="entry__icon"
                                     onClick={() => setToggleEdit(!toggleEdit)}
                                 />
@@ -89,8 +86,8 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                             />
                         )}
                         <p>Created on: {entryDate.toDateString()}</p>
-                        <DeleteForeverIcon
-                            fontSize="large"
+                        <Trash2
+                            size={35}
                             className="entry__icon entry__icon-delete"
                             onClick={() => setShowDeleteConfirm(!showDeleteConfirm)}
                         />
@@ -114,8 +111,8 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                     </div>
                 </>
             ) : (
-                <ExpandMoreIcon
-                    fontSize="large"
+                <ChevronDown
+                    size={35}
                     className="entry__icon entry__icon-details"
                     onClick={() => setShowDetails(true)}
                 />
