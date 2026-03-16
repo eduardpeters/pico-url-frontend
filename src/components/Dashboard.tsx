@@ -16,19 +16,19 @@ function Dashboard() {
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
-        async function getUrlCount(userToken: string) {
-            const response = await urlsAPI.getCount(userToken);
-            if (!response.error) {
+        async function getUrlCount() {
+            try {
+                const response = await urlsAPI.getCount();
                 setUrlCount(response.count);
-            } else {
-                setErrorMessage(response.error);
+            } catch (error: unknown) {
+                setErrorMessage(error instanceof Error ? error.message : "Failed to load count");
                 setShowRetry(true);
             }
         }
         if (!authContext?.isLoggedIn || !authContext.userDetails?.token) {
             navigate("/");
         } else {
-            getUrlCount(authContext.userDetails?.token);
+            getUrlCount();
         }
     }, [authContext?.isLoggedIn, authContext?.userDetails?.token, navigate]);
 

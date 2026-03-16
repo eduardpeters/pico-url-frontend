@@ -7,25 +7,22 @@ import "../styles/UrlEntry.css";
 
 interface UrlEntryProps {
     entry: UrlInterface;
-    userToken: string | undefined;
     urlCount: number;
     setUrlCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
+function UrlEntry({ entry, urlCount, setUrlCount }: UrlEntryProps) {
     const [showDetails, setShowDetails] = useState(false);
     const [toggleEdit, setToggleEdit] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const entryDate = new Date(entry.date);
 
     async function handleUrlDelete() {
-        if (userToken) {
-            const response = await urlsAPI.deleteUrl(userToken, entry.shortUrl.slice(-10));
-            if ((response as { error: string }).error) {
-                console.error((response as { error: string }).error);
-            } else {
-                setUrlCount(urlCount - 1);
-            }
+        try {
+            await urlsAPI.deleteUrl(entry.shortUrl.slice(-10));
+            setUrlCount(urlCount - 1);
+        } catch (error: unknown) {
+            console.error(error);
         }
     }
 
@@ -81,7 +78,6 @@ function UrlEntry({ entry, userToken, urlCount, setUrlCount }: UrlEntryProps) {
                             <UrlEditForm
                                 shortUrl={entry.shortUrl.slice(-10)}
                                 originalUrl={entry.originalUrl}
-                                userToken={userToken as string}
                                 closeForm={() => setToggleEdit(false)}
                             />
                         )}

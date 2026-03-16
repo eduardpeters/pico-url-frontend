@@ -15,18 +15,20 @@ function Login() {
     async function handleLogIn(event: React.FormEvent) {
         event.preventDefault();
         if (validateLoginForm(email, password)) {
-            const response = await authAPI.postLogIn(email, password);
-            if (response.error) {
-                showErrorMessage(response.error);
-            } else {
-                authContext?.setIsLoggedIn(true);
-                authContext?.setUserDetails({
+            try {
+                const response = await authAPI.postLogIn(email, password);
+                const userDetails = {
                     id: response._id,
                     name: response.name,
                     email: response.email,
                     token: response.token,
-                });
+                };
+                localStorage.setItem("auth", JSON.stringify(userDetails));
+                authContext?.setIsLoggedIn(true);
+                authContext?.setUserDetails(userDetails);
                 navigate("/dashboard");
+            } catch (error: unknown) {
+                showErrorMessage(error instanceof Error ? error.message : "Login failed");
             }
         }
     }
