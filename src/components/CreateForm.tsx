@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuthContext } from "../context/AuthContext";
 import { urlsAPI } from "../services/urlsAPI";
 import ResultModal from "./ResultModal";
 import { ResultDetailsInterface } from "../types/picotypes";
@@ -10,37 +9,29 @@ interface CreateFormProps {
     setUrlCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-interface CreateResponseInterface {
-    status: number;
-    data: {
-        shortUrl: string;
-    };
-}
-
 function CreateForm({ urlCount, setUrlCount }: CreateFormProps) {
-    const authContext = useAuthContext();
     const [originalUrl, setOriginalUrl] = useState("");
     const [showResult, setShowResult] = useState(false);
     const [resultDetails, setResultDetails] = useState<ResultDetailsInterface | null>(null);
 
     async function handleCreateSubmit(event: React.FormEvent) {
         event.preventDefault();
-        if (originalUrl && authContext?.userDetails?.token) {
-            const response = await urlsAPI.postUrl(authContext?.userDetails?.token, originalUrl);
-            if (!(response as { error: string }).error) {
+        if (originalUrl) {
+            try {
+                const response = await urlsAPI.postUrl(originalUrl);
                 const newDetails = handleResponse(
-                    (response as CreateResponseInterface).status,
-                    (response as CreateResponseInterface).data.shortUrl,
+                    response.status,
+                    response.data.shortUrl,
                     originalUrl,
                     urlCount,
                     setUrlCount
                 );
                 setOriginalUrl("");
                 setResultDetails(newDetails);
-            } else {
+            } catch (error: unknown) {
                 setResultDetails({
                     isError: true,
-                    message: (response as { error: string }).error,
+                    message: error instanceof Error ? error.message : "Failed to create URL",
                 });
             }
             setShowResult(true);

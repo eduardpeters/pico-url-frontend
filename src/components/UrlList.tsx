@@ -17,17 +17,17 @@ function UrlList({ urlCount, setUrlCount }: UrlListProps) {
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
-        async function getUserUrls(userToken: string) {
-            const response = await urlsAPI.getUrls(userToken);
-            if (!response.error) {
+        async function getUserUrls() {
+            try {
+                const response = await urlsAPI.getUrls();
                 setUserUrls(response);
-            } else {
-                setErrorMessage(response.error);
+            } catch (error: unknown) {
+                setErrorMessage(error instanceof Error ? error.message : "Failed to load URLs");
                 setShowError(true);
             }
         }
         if (authContext?.isLoggedIn && authContext.userDetails?.token) {
-            getUserUrls(authContext.userDetails?.token);
+            getUserUrls();
         }
     }, [urlCount, authContext?.isLoggedIn, authContext?.userDetails?.token]);
 
@@ -40,7 +40,6 @@ function UrlList({ urlCount, setUrlCount }: UrlListProps) {
                     <UrlEntry
                         key={entry._id}
                         entry={entry}
-                        userToken={authContext?.userDetails?.token}
                         urlCount={urlCount}
                         setUrlCount={setUrlCount}
                     />

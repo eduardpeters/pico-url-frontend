@@ -5,11 +5,10 @@ import "../styles/UrlEditForm.css";
 interface UrlEditFormProps {
     shortUrl: string;
     originalUrl: string;
-    userToken: string;
     closeForm: () => void;
 }
 
-function UrlEditForm({ shortUrl, originalUrl, userToken, closeForm }: UrlEditFormProps) {
+function UrlEditForm({ shortUrl, originalUrl, closeForm }: UrlEditFormProps) {
     const [newUrl, setNewUrl] = useState("");
 
     async function handleUrlEdit(event: React.FormEvent<HTMLFormElement>) {
@@ -17,8 +16,11 @@ function UrlEditForm({ shortUrl, originalUrl, userToken, closeForm }: UrlEditFor
         if (newUrl === originalUrl) {
             return;
         }
-        if (userToken) {
-            await urlsAPI.patchUrl(userToken, shortUrl, originalUrl);
+        try {
+            await urlsAPI.patchUrl(shortUrl, newUrl);
+            closeForm();
+        } catch (error: unknown) {
+            console.error(error);
         }
     }
 

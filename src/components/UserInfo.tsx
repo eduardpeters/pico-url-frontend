@@ -11,6 +11,7 @@ function UserInfo({ urlCount }: UserInfoProps) {
     const navigate = useNavigate();
 
     function handleLogout() {
+        localStorage.removeItem("auth");
         authContext?.setUserDetails(null);
         authContext?.setIsLoggedIn(false);
         navigate("/");

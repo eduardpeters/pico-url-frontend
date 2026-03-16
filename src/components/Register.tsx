@@ -15,11 +15,11 @@ function Register() {
     async function handleRegister(event: React.FormEvent) {
         event.preventDefault();
         if (validateRegisterForm(name, email, password, confirmPassword)) {
-            const response = await usersAPI.postRegister(name, email, password);
-            if (response.error) {
-                showErrorMessage(response.error);
-            } else {
+            try {
+                await usersAPI.postRegister(name, email, password);
                 navigate("/login");
+            } catch (error: unknown) {
+                showErrorMessage(error instanceof Error ? error.message : "Registration failed");
             }
         }
     }

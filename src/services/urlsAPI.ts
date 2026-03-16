@@ -1,98 +1,33 @@
-import axios, { AxiosError } from "axios";
-
-const baseUrl = import.meta.env.VITE_API_URL;
+import api from "./api";
 
 async function getOriginal(shortId: string) {
-    const requestUrl = `${baseUrl}urls/${shortId}`;
-    try {
-        const response = await axios.get(requestUrl);
-        return response.data;
-    } catch (error: unknown) {
-        console.error(error);
-        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
-    }
+    const response = await api.get(`urls/${shortId}`);
+    return response.data;
 }
 
-async function getCount(userToken: string) {
-    const requestUrl = `${baseUrl}urls/count`;
-    const config = {
-        headers: {
-            Authorization: `Bearer ${userToken}`,
-        },
-    };
-    try {
-        const response = await axios.get(requestUrl, config);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
-    }
+async function getCount() {
+    const response = await api.get("urls/count");
+    return response.data;
 }
 
-async function getUrls(userToken: string) {
-    const requestUrl = `${baseUrl}urls`;
-    const config = {
-        headers: {
-            Authorization: `Bearer ${userToken}`,
-        },
-    };
-    try {
-        const response = await axios.get(requestUrl, config);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
-    }
+async function getUrls() {
+    const response = await api.get("urls");
+    return response.data;
 }
 
-async function postUrl(userToken: string, originalUrl: string) {
-    const requestUrl = `${baseUrl}urls`;
-    const requestBody = { url: originalUrl };
-    const config = {
-        headers: {
-            Authorization: `Bearer ${userToken}`,
-        },
-    };
-    try {
-        const response = await axios.post(requestUrl, requestBody, config);
-        return response;
-    } catch (error) {
-        console.error(error);
-        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
-    }
+async function postUrl(originalUrl: string) {
+    const response = await api.post("urls", { url: originalUrl });
+    return response;
 }
 
-async function patchUrl(userToken: string, shortUrl: string, originalUrl: string) {
-    const requestUrl = `${baseUrl}urls/${shortUrl}`;
-    const requestBody = { url: originalUrl };
-    const config = {
-        headers: {
-            Authorization: `Bearer ${userToken}`,
-        },
-    };
-    try {
-        const response = await axios.patch(requestUrl, requestBody, config);
-        return response;
-    } catch (error) {
-        console.error(error);
-        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
-    }
+async function patchUrl(shortUrl: string, originalUrl: string) {
+    const response = await api.patch(`urls/${shortUrl}`, { url: originalUrl });
+    return response;
 }
 
-async function deleteUrl(userToken: string, shortId: string) {
-    const requestUrl = `${baseUrl}urls/${shortId}`;
-    const config = {
-        headers: {
-            Authorization: `Bearer ${userToken}`,
-        },
-    };
-    try {
-        const response = await axios.delete(requestUrl, config);
-        return response;
-    } catch (error) {
-        console.error(error);
-        return { error: (error as AxiosError).response?.data || (error as AxiosError).message };
-    }
+async function deleteUrl(shortId: string) {
+    const response = await api.delete(`urls/${shortId}`);
+    return response;
 }
 
 export const urlsAPI = { getOriginal, getCount, getUrls, postUrl, patchUrl, deleteUrl };

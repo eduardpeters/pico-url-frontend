@@ -233,40 +233,49 @@ default to 24px for that usage.
 
 ## Phase 5 — Axios Instance + Service Layer Cleanup
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Eliminate the manual `userToken` threading through every API call by creating a
 shared Axios instance with a request interceptor. Also update service functions to throw
 on error (instead of returning `{ error }` objects) so TanStack Query can own error state.
 
-**Files to create:**
+**Files created:**
 
-- `src/services/api.ts` — shared Axios instance:
+- `src/services/api.ts` — shared Axios instance (exactly as planned)
 
-    ```ts
-    import axios from "axios";
+**Files modified:**
 
-    const api = axios.create({ baseURL: import.meta.env.VITE_API_URL });
-
-    api.interceptors.request.use((config) => {
-        const stored = localStorage.getItem("auth");
-        const token = stored ? JSON.parse(stored).token : null;
-        if (token) config.headers.Authorization = `Bearer ${token}`;
-        return config;
-    });
-
-    export default api;
-    ```
-
-**Files to modify:**
-
-- `src/services/urlsAPI.ts` — import `api` instead of `axios`; remove `userToken`
-  parameter from all functions; replace try/catch error-object returns with `throw`
+- `src/services/urlsAPI.ts` — imports `api`; `userToken` removed from `getCount`,
+  `getUrls`, `postUrl`, `patchUrl`, `deleteUrl`; try/catch wrappers removed (errors throw)
 - `src/services/authAPI.ts` — same treatment
 - `src/services/usersAPI.ts` — same treatment
+- `src/components/UrlEditForm.tsx` — `userToken` prop removed; `patchUrl` call updated
+- `src/components/UrlEntry.tsx` — `userToken` prop removed; `deleteUrl` call updated;
+  no longer passes `userToken` to `UrlEditForm`; delete wrapped in try/catch
+- `src/components/UrlList.tsx` — `userToken` removed from `getUrls` call; try/catch added
+- `src/components/CreateForm.tsx` — `userToken` removed from `postUrl` call; try/catch
+  replaces `response.error` duck-typing; `useAuthContext` import removed (no longer needed)
+- `src/components/Dashboard.tsx` — `userToken` removed from `getCount` call; try/catch added
+- `src/components/Login.tsx` — `postLogIn` wrapped in try/catch; on success, writes
+  `{ id, name, email, token }` to `localStorage["auth"]` so the interceptor has a token
+  immediately (bridging the gap until Phase 7 formalises persistence in the context)
+- `src/components/Register.tsx` — `postRegister` wrapped in try/catch
+- `src/components/UserInfo.tsx` — logout handler calls `localStorage.removeItem("auth")`
+  before clearing context state
 
-**Result:** Service functions become clean one-liners. All `userToken` props passed into
-components solely to hand off to services can be removed.
+**Adjustments vs plan:**
+
+- Components were updated alongside the service files (the plan only listed service files
+  explicitly, but removing `userToken` from service signatures forced cascading component
+  updates as part of the same phase).
+- `Login.tsx` writes to `localStorage["auth"]` as a bridge: the interceptor created here
+  reads from that key, but Phase 7 is where the context gains its `useEffect`-based sync.
+  Without this write the app would have been functionally broken between phases. Phase 7
+  will move the write into the context effect; no rework of the stored shape is needed
+  since both use the same `{ id, name, email, token }` object.
+- `UrlEditForm.tsx` had a pre-existing bug: `patchUrl` was called with `originalUrl`
+  instead of `newUrl`. Fixed as part of this phase. `closeForm()` is now also called on
+  a successful patch.
 
 **Note:** This phase is a prerequisite for Phase 6 (TanStack Query) because TQ relies on
 functions throwing to populate its `error` state.
