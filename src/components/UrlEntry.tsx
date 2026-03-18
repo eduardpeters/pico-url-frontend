@@ -2,25 +2,23 @@ import { useState } from "react";
 import { Copy, ChevronUp, ChevronDown, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import UrlEditForm from "./UrlEditForm";
 import { UrlInterface } from "../types/picotypes";
-import { urlsAPI } from "../services/urlsAPI";
+import useDeleteUrlMutation from "../hooks/useDeleteUrlMutation";
 import "../styles/UrlEntry.css";
 
 interface UrlEntryProps {
     entry: UrlInterface;
-    urlCount: number;
-    setUrlCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function UrlEntry({ entry, urlCount, setUrlCount }: UrlEntryProps) {
+function UrlEntry({ entry }: UrlEntryProps) {
     const [showDetails, setShowDetails] = useState(false);
     const [toggleEdit, setToggleEdit] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const entryDate = new Date(entry.date);
+    const deleteMutation = useDeleteUrlMutation();
 
     async function handleUrlDelete() {
         try {
-            await urlsAPI.deleteUrl(entry.shortUrl.slice(-10));
-            setUrlCount(urlCount - 1);
+            await deleteMutation.mutateAsync(entry.shortUrl.slice(-10));
         } catch (error: unknown) {
             console.error(error);
         }
