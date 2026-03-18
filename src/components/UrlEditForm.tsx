@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { urlsAPI } from "../services/urlsAPI";
+import useUpdateUrlMutation from "../hooks/useUpdateUrlMutation";
 import "../styles/UrlEditForm.css";
 
 interface UrlEditFormProps {
@@ -10,6 +10,7 @@ interface UrlEditFormProps {
 
 function UrlEditForm({ shortUrl, originalUrl, closeForm }: UrlEditFormProps) {
     const [newUrl, setNewUrl] = useState("");
+    const updateMutation = useUpdateUrlMutation();
 
     async function handleUrlEdit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -17,7 +18,7 @@ function UrlEditForm({ shortUrl, originalUrl, closeForm }: UrlEditFormProps) {
             return;
         }
         try {
-            await urlsAPI.patchUrl(shortUrl, newUrl);
+            await updateMutation.mutateAsync({ shortUrl, newUrl });
             closeForm();
         } catch (error: unknown) {
             console.error(error);

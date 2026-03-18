@@ -284,54 +284,70 @@ functions throwing to populate its `error` state.
 
 ## Phase 6 — TanStack Query
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Replace all manual `useEffect` + `useState` data-fetching boilerplate with
 TanStack Query. This also **completely eliminates the `urlCount` / `setUrlCount`
-prop-drilling chain** that runs through `Dashboard` → `CreateForm` / `UrlList` → `UrlEntry`
-(it exists solely to trigger refetches, which TQ handles via `invalidateQueries`).
+prop-drilling chain** that ran through `Dashboard` → `CreateForm` / `UrlList` → `UrlEntry`
+(it existed solely to trigger refetches, which TQ handles via `invalidateQueries`).
 
-**Packages:**
+**Packages added:**
 
-- Add: `@tanstack/react-query` (v5), `@tanstack/react-query-devtools`
+- `@tanstack/react-query@5.x`
+- `@tanstack/react-query-devtools@5.x`
 
-**Files to create — `src/hooks/`:**
+(`--legacy-peer-deps` required, same constraint as previous phases.)
 
-- `useUrlsQuery.ts`
-    ```ts
-    useQuery({ queryKey: ["urls"], queryFn: urlsAPI.getUrls });
-    ```
-- `useUrlCountQuery.ts`
-    ```ts
-    useQuery({ queryKey: ["urlCount"], queryFn: urlsAPI.getCount });
-    ```
-- `useCreateUrlMutation.ts`
-    ```ts
-    useMutation({
-        mutationFn: (originalUrl: string) => urlsAPI.postUrl(originalUrl),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["urls"] }),
-    });
-    ```
-- `useDeleteUrlMutation.ts` — same pattern, invalidates `["urls"]`
-- `useUpdateUrlMutation.ts` — same pattern, invalidates `["urls"]`
+**Files created — `src/hooks/`:**
 
-**Files to modify:**
+- `useUrlsQuery.ts` — `useQuery({ queryKey: ["urls"], queryFn: urlsAPI.getUrls, enabled: !!token })`
+- `useUrlCountQuery.ts` — `useQuery({ queryKey: ["urlCount"], queryFn: urlsAPI.getCount, enabled: !!token })`
+- `useCreateUrlMutation.ts` — invalidates `["urls"]` **and** `["urlCount"]` on success
+- `useDeleteUrlMutation.ts` — same, invalidates both `["urls"]` and `["urlCount"]`
+- `useUpdateUrlMutation.ts` — invalidates `["urls"]` only (update does not change count)
 
-- `src/App.tsx` — wrap `<Routes>` in `<QueryClientProvider client={queryClient}>`;
-  add `<ReactQueryDevtools />` inside (rendered only in dev)
-- `src/components/Dashboard.tsx` — replace `useEffect` + `urlCount` state with
-  `useUrlCountQuery`; remove `urlCount`/`setUrlCount` props passed to children
-- `src/components/UrlList.tsx` — replace `useEffect` with `useUrlsQuery`; remove
-  `urlCount`/`setUrlCount` props
-- `src/components/UrlEntry.tsx` — replace manual `deleteUrl` call with
-  `useDeleteUrlMutation`; remove `urlCount`/`setUrlCount` props
-- `src/components/CreateForm.tsx` — replace manual `postUrl` call with
-  `useCreateUrlMutation`; remove `urlCount`/`setUrlCount` props
-- `src/components/UrlEditForm.tsx` — replace manual `patchUrl` call with
-  `useUpdateUrlMutation`
+**Files modified:**
 
-**Loading and error states** come from `isPending`, `isError`, and `error` returned by
-the hooks — no more hand-rolled `showError` / `errorMessage` state for fetch failures.
+- `src/App.tsx` — `QueryClientProvider` (with `queryClient` instance) wraps
+  `AuthContextProvider`; `<ReactQueryDevtools initialIsOpen={false} />` placed inside
+  `QueryClientProvider`, outside `AuthContextProvider`
+- `src/components/Dashboard.tsx` — `useEffect` + `urlCount`/`setUrlCount` state removed;
+  `useUrlCountQuery` used for count; `isError`/`error` from the hook wired into the
+  existing `RetryModal`; `urlCount`/`setUrlCount` props removed from `<CreateForm>`,
+  `<UrlList>`, and `<UserInfo>`
+- `src/components/UserInfo.tsx` — `urlCount` prop and `UserInfoProps` interface removed;
+  calls `useUrlCountQuery` directly; count derived as `data?.count ?? 0`
+- `src/components/UrlList.tsx` — `useEffect` + `userUrls`/`showError`/`errorMessage` state
+  removed; `useUrlsQuery` used; `isPending` and `isError` drive loading/error rendering;
+  `UrlListProps` interface and `urlCount`/`setUrlCount` props removed
+- `src/components/UrlEntry.tsx` — manual `urlsAPI.deleteUrl` + `setUrlCount` replaced with
+  `useDeleteUrlMutation` + `mutateAsync`; `UrlEntryProps` reduced to `entry` only
+- `src/components/CreateForm.tsx` — manual `urlsAPI.postUrl` replaced with
+  `useCreateUrlMutation` + `mutateAsync`; `mutateAsync` returns the full Axios response so
+  the existing `handleResponse` status-check (200 vs 201) is preserved unchanged;
+  `CreateFormProps` interface and `urlCount`/`setUrlCount` props removed
+- `src/components/UrlEditForm.tsx` — manual `urlsAPI.patchUrl` replaced with
+  `useUpdateUrlMutation` + `mutateAsync`; `{ shortUrl, newUrl }` passed as a single params
+  object matching the `UpdateUrlParams` interface defined in the hook
+
+**Adjustments vs original plan:**
+
+- **`enabled` option added to both query hooks.** The original plan omitted this. Both
+  `useUrlsQuery` and `useUrlCountQuery` include `enabled: !!token` (token read from
+  `authContext?.userDetails?.token`) to prevent unauthenticated requests during the brief
+  render before `Dashboard`'s navigation guard fires.
+- **Create and delete mutations invalidate `["urlCount"]` in addition to `["urls"]`.**
+  The original plan only listed `["urls"]`. Without also invalidating `["urlCount"]`,
+  `UserInfo`'s displayed count would be stale after create/delete mutations.
+- **`UserInfo` was updated (not listed in original plan).** Removing the `urlCount` prop
+  required `UserInfo` to call `useUrlCountQuery` directly. Since the query result is
+  already cached, this adds no extra network request.
+- **`QueryClientProvider` wraps `AuthContextProvider`** (outside, not inside). Auth state
+  is read from `localStorage` via the Axios interceptor — query hooks do not need React
+  auth context — so there is no functional difference, but this keeps `QueryClientProvider`
+  at the outermost practical level.
+- **`ReactQueryDevtools` is placed outside `AuthContextProvider`** (but inside
+  `QueryClientProvider`) so it is always accessible regardless of auth state.
 
 ---
 
@@ -384,13 +400,13 @@ created in Phase 5)
 ## Execution Order
 
 ```
-Phase 1 (Vite migration)
-  └─ Phase 2 (dependency upgrades)
-       └─ Phase 3 (ESLint + Prettier)  ← run `npm run format` immediately after
-            ├─ Phase 4 (lucide-react)
-            └─ Phase 5 (Axios instance)
-                 └─ Phase 6 (TanStack Query)
-                      └─ Phase 7 (auth persistence)
+Phase 1 (Vite migration)          ✓ complete
+  └─ Phase 2 (dependency upgrades)          ✓ complete
+       └─ Phase 3 (ESLint + Prettier)       ✓ complete
+            ├─ Phase 4 (lucide-react)       ✓ complete
+            └─ Phase 5 (Axios instance)     ✓ complete
+                 └─ Phase 6 (TanStack Query)          ✓ complete
+                      └─ Phase 7 (auth persistence)   ← next
                            └─ Phase 8 (AGENTS.md update)
 ```
 

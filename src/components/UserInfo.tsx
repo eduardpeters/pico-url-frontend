@@ -1,14 +1,13 @@
 import { useNavigate } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
+import useUrlCountQuery from "../hooks/useUrlCountQuery";
 import "../styles/UserInfo.css";
 
-interface UserInfoProps {
-    urlCount: number;
-}
-
-function UserInfo({ urlCount }: UserInfoProps) {
+function UserInfo() {
     const authContext = useAuthContext();
     const navigate = useNavigate();
+    const { data } = useUrlCountQuery();
+    const urlCount: number = data?.count ?? 0;
 
     function handleLogout() {
         localStorage.removeItem("auth");

@@ -1,30 +1,24 @@
 import { useState } from "react";
-import { urlsAPI } from "../services/urlsAPI";
+import useCreateUrlMutation from "../hooks/useCreateUrlMutation";
 import ResultModal from "./ResultModal";
 import { ResultDetailsInterface } from "../types/picotypes";
 import "../styles/CreateForm.css";
 
-interface CreateFormProps {
-    urlCount: number;
-    setUrlCount: React.Dispatch<React.SetStateAction<number>>;
-}
-
-function CreateForm({ urlCount, setUrlCount }: CreateFormProps) {
+function CreateForm() {
     const [originalUrl, setOriginalUrl] = useState("");
     const [showResult, setShowResult] = useState(false);
     const [resultDetails, setResultDetails] = useState<ResultDetailsInterface | null>(null);
+    const createMutation = useCreateUrlMutation();
 
     async function handleCreateSubmit(event: React.FormEvent) {
         event.preventDefault();
         if (originalUrl) {
             try {
-                const response = await urlsAPI.postUrl(originalUrl);
+                const response = await createMutation.mutateAsync(originalUrl);
                 const newDetails = handleResponse(
                     response.status,
                     response.data.shortUrl,
-                    originalUrl,
-                    urlCount,
-                    setUrlCount
+                    originalUrl
                 );
                 setOriginalUrl("");
                 setResultDetails(newDetails);
@@ -38,13 +32,7 @@ function CreateForm({ urlCount, setUrlCount }: CreateFormProps) {
         }
     }
 
-    function handleResponse(
-        status: number,
-        shortUrl: string,
-        longUrl: string,
-        urlCount: number,
-        setUrlCount: React.Dispatch<React.SetStateAction<number>>
-    ) {
+    function handleResponse(status: number, shortUrl: string, longUrl: string) {
         const newDetails: ResultDetailsInterface = {
             isError: false,
             message: "",
@@ -57,7 +45,6 @@ function CreateForm({ urlCount, setUrlCount }: CreateFormProps) {
                 break;
             case 201:
                 newDetails.message = "New Pico URL created:";
-                setUrlCount(urlCount + 1);
                 break;
             default:
                 newDetails.isError = true;
