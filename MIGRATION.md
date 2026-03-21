@@ -395,20 +395,34 @@ created in Phase 5)
 
 ## Phase 8 — Update AGENTS.md
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Keep the developer guide accurate after all the above changes.
 
-**Updates needed:**
+**Updates made:**
 
-- Commands: `npm run dev` (dev server), `npm run preview`, `npm run lint`, `npm run format`
-- Test commands: `vitest` instead of `jest` / `react-scripts test`
-- Env vars: `VITE_API_URL` instead of `REACT_APP_API_URL`
-- Router import: `from "react-router"` (not `"react-router-dom"`) — package was consolidated in v7
-- Icon imports: `lucide-react` (not `@mui/icons-material`) — see Phase 4 substitution map
-- Service layer: functions now throw; no more `{ error }` return objects
-- TanStack Query patterns: query keys, mutation + invalidation pattern
-- Auth context: `logout()` helper, `isLoggedIn` is derived, localStorage persistence
+- Project Overview: React 18 / TypeScript 4.9 / CRA → React 19 / TypeScript 5.x / Vite;
+  dependency list updated (React Router DOM v6, MUI, Emotion → React Router v7,
+  lucide-react, TanStack Query v5)
+- Commands: full block replaced — `npm run dev` as primary dev command, `→ /dist` output
+  dir, `npm run lint` and `npm run format` added, `npm test` documented as Vitest; CI test
+  command updated from `CI=true npm test` to `npm test -- run`; ESLint config noted as
+  `eslint.config.mjs` (flat config) not `package.json`; Prettier config documented
+- TypeScript: `"moduleResolution": "bundler"` bullet added; `"Babel transpiles"` →
+  `"Vite/esbuild transpiles"`
+- Imports: React Router example updated from `"react-router-dom"` → `"react-router"`;
+  third-party line updated to reference TanStack Query and lucide-react
+- Error Handling: service-layer and component-layer patterns fully replaced — services now
+  throw (no try/catch, no `{ error }` return); callers use try/catch
+- API Services: `process.env.REACT_APP_API_URL` → `import.meta.env.VITE_API_URL`; manual
+  bearer token header note removed; shared `api.ts` instance documented; direct `axios`
+  import prohibition noted
+- State Management: `setIsLoggedIn` example removed; login/logout patterns documented
+  (`setUserDetails` / `logout()`); `isLoggedIn` noted as derived; localStorage persistence
+  noted as automatic via context `useEffect`; TanStack Query subsection added (hooks in
+  `src/hooks/`, query key conventions, `enabled: !!token`, mutation + invalidation pattern)
+- Testing: Jest → Vitest; single-file run command updated from `--testPathPattern=` to
+  Vitest's positional filter syntax
 
 ---
 
@@ -422,7 +436,7 @@ Phase 1 (Vite migration)          ✓ complete
             └─ Phase 5 (Axios instance)     ✓ complete
                  └─ Phase 6 (TanStack Query)          ✓ complete
                        └─ Phase 7 (auth persistence)   ✓ complete
-                            └─ Phase 8 (AGENTS.md update)   ← next
+                             └─ Phase 8 (AGENTS.md update)   ✓ complete
 ```
 
 Phases 4 and 5 have no dependency on each other and can be done in either order or in
