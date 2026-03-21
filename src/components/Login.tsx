@@ -23,8 +23,6 @@ function Login() {
                     email: response.email,
                     token: response.token,
                 };
-                localStorage.setItem("auth", JSON.stringify(userDetails));
-                authContext?.setIsLoggedIn(true);
                 authContext?.setUserDetails(userDetails);
                 navigate("/dashboard");
             } catch (error: unknown) {
