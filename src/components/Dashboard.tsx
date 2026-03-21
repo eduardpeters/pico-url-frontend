@@ -14,10 +14,10 @@ function Dashboard() {
     const { isError, error } = useUrlCountQuery();
 
     useEffect(() => {
-        if (!authContext?.isLoggedIn || !authContext.userDetails?.token) {
+        if (!authContext?.userDetails?.token) {
             navigate("/");
         }
-    }, [authContext?.isLoggedIn, authContext?.userDetails?.token, navigate]);
+    }, [authContext?.userDetails?.token, navigate]);
 
     return (
         <div className="dashboard__container">

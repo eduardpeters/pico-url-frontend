@@ -10,9 +10,7 @@ function UserInfo() {
     const urlCount: number = data?.count ?? 0;
 
     function handleLogout() {
-        localStorage.removeItem("auth");
-        authContext?.setUserDetails(null);
-        authContext?.setIsLoggedIn(false);
+        authContext?.logout();
         navigate("/");
     }
 

@@ -353,47 +353,76 @@ prop-drilling chain** that ran through `Dashboard` → `CreateForm` / `UrlList` 
 
 ## Phase 7 — Auth Persistence + Context Simplification
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Persist auth state to `localStorage` so users survive a page refresh. Also
 simplify the context by deriving `isLoggedIn` from `userDetails` rather than storing it
 as a separate, potentially-inconsistent boolean.
 
-**Files to modify:**
+**Files modified:**
 
 - `src/context/AuthContext.tsx`:
-    - On mount: read `localStorage.getItem("auth")`, JSON-parse and hydrate `userDetails`
-    - Replace `isLoggedIn` `useState` with a derived boolean: `const isLoggedIn = userDetails !== null`
-    - Whenever `userDetails` is set/cleared, sync to localStorage via `useEffect`
-    - Add a `logout()` helper that calls `setUserDetails(null)` (localStorage is cleared
-      by the effect above)
-- `src/components/Login.tsx` — remove `setIsLoggedIn(true)` call (derived now)
-- `src/components/Register.tsx` — same
-- `src/components/Dashboard.tsx` — replace `navigate("/")` guard with a check on
-  `userDetails` rather than `isLoggedIn`; use `logout()` helper if needed
-- Any other component calling `setIsLoggedIn` directly — update to use `logout()`
+    - `UserDetailsInterface` exported (was private)
+    - `readStoredAuth()` helper initializes `userDetails` state from `localStorage["auth"]`
+      on mount; try/catch falls back to `null` on malformed JSON
+    - `isLoggedIn` `useState` removed; replaced with derived `const isLoggedIn = userDetails !== null`
+    - `useEffect([userDetails])` syncs state to `localStorage` (sets on login, removes on logout)
+    - `logout()` helper added: calls `setUserDetails(null)`; the effect handles storage cleanup
+    - `AuthContextInterface` updated: `setIsLoggedIn` removed, `logout: () => void` added
+- `src/components/Login.tsx` — removed `localStorage.setItem("auth", ...)` (context effect
+  now owns persistence) and `setIsLoggedIn(true)` call (derived)
+- `src/components/UserInfo.tsx` — replaced the three-line manual logout sequence
+  (`localStorage.removeItem`, `setUserDetails(null)`, `setIsLoggedIn(false)`) with a single
+  `authContext?.logout()` call
+- `src/components/Dashboard.tsx` — guard simplified from
+  `!authContext?.isLoggedIn || !authContext.userDetails?.token` to
+  `!authContext?.userDetails?.token`; dependency array updated to match
 
 **localStorage key:** `"auth"` (matches the key referenced in the axios interceptor
 created in Phase 5)
+
+**Adjustments vs plan:**
+
+- `Register.tsx` required no changes. The plan noted "same treatment as Login.tsx" but
+  Register.tsx has never called `setIsLoggedIn` — it navigates to `/login` on success
+  without touching auth context.
+- `UserDetailsInterface` was exported as part of this phase (not mentioned in the original
+  plan) to make the type available to consumers without redundant inline type definitions.
+- `readStoredAuth()` wraps `JSON.parse` in try/catch with a `null` fallback (not mentioned
+  in the original plan) to guard against malformed data left by previous app versions.
 
 ---
 
 ## Phase 8 — Update AGENTS.md
 
-**Status:** pending
+**Status:** complete
 
 **Goal:** Keep the developer guide accurate after all the above changes.
 
-**Updates needed:**
+**Updates made:**
 
-- Commands: `npm run dev` (dev server), `npm run preview`, `npm run lint`, `npm run format`
-- Test commands: `vitest` instead of `jest` / `react-scripts test`
-- Env vars: `VITE_API_URL` instead of `REACT_APP_API_URL`
-- Router import: `from "react-router"` (not `"react-router-dom"`) — package was consolidated in v7
-- Icon imports: `lucide-react` (not `@mui/icons-material`) — see Phase 4 substitution map
-- Service layer: functions now throw; no more `{ error }` return objects
-- TanStack Query patterns: query keys, mutation + invalidation pattern
-- Auth context: `logout()` helper, `isLoggedIn` is derived, localStorage persistence
+- Project Overview: React 18 / TypeScript 4.9 / CRA → React 19 / TypeScript 5.x / Vite;
+  dependency list updated (React Router DOM v6, MUI, Emotion → React Router v7,
+  lucide-react, TanStack Query v5)
+- Commands: full block replaced — `npm run dev` as primary dev command, `→ /dist` output
+  dir, `npm run lint` and `npm run format` added, `npm test` documented as Vitest; CI test
+  command updated from `CI=true npm test` to `npm test -- run`; ESLint config noted as
+  `eslint.config.mjs` (flat config) not `package.json`; Prettier config documented
+- TypeScript: `"moduleResolution": "bundler"` bullet added; `"Babel transpiles"` →
+  `"Vite/esbuild transpiles"`
+- Imports: React Router example updated from `"react-router-dom"` → `"react-router"`;
+  third-party line updated to reference TanStack Query and lucide-react
+- Error Handling: service-layer and component-layer patterns fully replaced — services now
+  throw (no try/catch, no `{ error }` return); callers use try/catch
+- API Services: `process.env.REACT_APP_API_URL` → `import.meta.env.VITE_API_URL`; manual
+  bearer token header note removed; shared `api.ts` instance documented; direct `axios`
+  import prohibition noted
+- State Management: `setIsLoggedIn` example removed; login/logout patterns documented
+  (`setUserDetails` / `logout()`); `isLoggedIn` noted as derived; localStorage persistence
+  noted as automatic via context `useEffect`; TanStack Query subsection added (hooks in
+  `src/hooks/`, query key conventions, `enabled: !!token`, mutation + invalidation pattern)
+- Testing: Jest → Vitest; single-file run command updated from `--testPathPattern=` to
+  Vitest's positional filter syntax
 
 ---
 
@@ -406,8 +435,8 @@ Phase 1 (Vite migration)          ✓ complete
             ├─ Phase 4 (lucide-react)       ✓ complete
             └─ Phase 5 (Axios instance)     ✓ complete
                  └─ Phase 6 (TanStack Query)          ✓ complete
-                      └─ Phase 7 (auth persistence)   ← next
-                           └─ Phase 8 (AGENTS.md update)
+                       └─ Phase 7 (auth persistence)   ✓ complete
+                             └─ Phase 8 (AGENTS.md update)   ✓ complete
 ```
 
 Phases 4 and 5 have no dependency on each other and can be done in either order or in
