@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
-import { urlsAPI } from "../services/urlsAPI";
+import useUrlCountQuery from "../hooks/useUrlCountQuery";
 import "../styles/Dashboard.css";
 import CreateForm from "./CreateForm";
 import RetryModal from "./RetryModal";
@@ -11,36 +11,28 @@ import UserInfo from "./UserInfo";
 function Dashboard() {
     const authContext = useAuthContext();
     const navigate = useNavigate();
-    const [urlCount, setUrlCount] = useState(0);
-    const [showRetry, setShowRetry] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const { isError, error } = useUrlCountQuery();
 
     useEffect(() => {
-        async function getUrlCount(userToken: string) {
-            const response = await urlsAPI.getCount(userToken);
-            if (!response.error) {
-                setUrlCount(response.count);
-            } else {
-                setErrorMessage(response.error);
-                setShowRetry(true);
-            }
-        }
-        if (!authContext?.isLoggedIn || !authContext.userDetails?.token) {
+        if (!authContext?.userDetails?.token) {
             navigate("/");
-        } else {
-            getUrlCount(authContext.userDetails?.token);
         }
-    }, []);
+    }, [authContext?.userDetails?.token, navigate]);
 
     return (
         <div className="dashboard__container">
             <h1 className="dashboard__title">Pico URL Dashboard</h1>
             <div className="dashboard__upper">
-                <UserInfo urlCount={urlCount} />
-                <CreateForm urlCount={urlCount} setUrlCount={setUrlCount} />
+                <UserInfo />
+                <CreateForm />
             </div>
-            <UrlList urlCount={urlCount} setUrlCount={setUrlCount} />
-            {showRetry && <RetryModal closeModal={() => setShowRetry(false)} errorMessage={errorMessage} />}
+            <UrlList />
+            {isError && (
+                <RetryModal
+                    closeModal={() => {}}
+                    errorMessage={error instanceof Error ? error.message : "Failed to load count"}
+                />
+            )}
         </div>
     );
 }

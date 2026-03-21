@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { usersAPI } from "../services/usersAPI";
 import styles from "../styles/general.module.css";
 import "../styles/Register.css";
@@ -15,17 +15,21 @@ function Register() {
     async function handleRegister(event: React.FormEvent) {
         event.preventDefault();
         if (validateRegisterForm(name, email, password, confirmPassword)) {
-            const response = await usersAPI.postRegister(name, email, password);
-            if (response.error) {
-                showErrorMessage(response.error);
-            }
-            else {
+            try {
+                await usersAPI.postRegister(name, email, password);
                 navigate("/login");
+            } catch (error: unknown) {
+                showErrorMessage(error instanceof Error ? error.message : "Registration failed");
             }
         }
     }
 
-    function validateRegisterForm(name: string, email: string, password: string, confirmPassword: string): boolean {
+    function validateRegisterForm(
+        name: string,
+        email: string,
+        password: string,
+        confirmPassword: string
+    ): boolean {
         if (!name) {
             showErrorMessage("Please provide a name");
             return false;
@@ -59,8 +63,13 @@ function Register() {
             <div className="register__content">
                 <h1 className={styles.title}>Pico URL Registration</h1>
                 <h3 className={styles.subtitle}>Please enter your new user details</h3>
-                <h4 className="form__error" style={{ visibility: errorMessage.length > 2 ? "visible" : "hidden" }}>{errorMessage}</h4>
-                <form className="form__container" onSubmit={event => handleRegister(event)}>
+                <h4
+                    className="form__error"
+                    style={{ visibility: errorMessage.length > 2 ? "visible" : "hidden" }}
+                >
+                    {errorMessage}
+                </h4>
+                <form className="form__container" onSubmit={(event) => handleRegister(event)}>
                     <div className="form__field">
                         <label htmlFor="name">Name</label>
                         <input
@@ -68,7 +77,7 @@ function Register() {
                             id="name"
                             required
                             value={name}
-                            onChange={event => setName(event.target.value)}
+                            onChange={(event) => setName(event.target.value)}
                         ></input>
                     </div>
                     <div className="form__field">
@@ -76,9 +85,9 @@ function Register() {
                         <input
                             type="email"
                             id="email"
-                            required 
+                            required
                             value={email}
-                            onChange={event => setEmail(event.target.value)}
+                            onChange={(event) => setEmail(event.target.value)}
                         ></input>
                     </div>
                     <div className="form__field">
@@ -88,7 +97,7 @@ function Register() {
                             id="password"
                             required
                             value={password}
-                            onChange={event => setPassword(event.target.value)}
+                            onChange={(event) => setPassword(event.target.value)}
                         ></input>
                     </div>
                     <div className="form__field">
@@ -98,10 +107,12 @@ function Register() {
                             id="confirm-password"
                             required
                             value={confirmPassword}
-                            onChange={event => setConfirmPassword(event.target.value)}
+                            onChange={(event) => setConfirmPassword(event.target.value)}
                         ></input>
                     </div>
-                    <button className="form__button" type="submit">Register!</button>
+                    <button className="form__button" type="submit">
+                        Register!
+                    </button>
                 </form>
                 <div className={styles.links}>
                     <Link to="/login">Log In!</Link>

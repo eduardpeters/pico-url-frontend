@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import "../styles/ResultModal.css";
 
 interface RetryModalProps {
@@ -26,11 +26,15 @@ function RetryModal({ closeModal, errorMessage }: RetryModalProps) {
     }
 
     return (
-        <div className="modal__container" onClick={event => handleOutsideClick(event)}>
+        <div className="modal__container" role="presentation" onClick={(event) => handleOutsideClick(event)}>
             <div className="modal__content">
                 <h3 className="content__error">{errorMessage}</h3>
-                <button className="modal__button-retry" onClick={refreshPage}>Retry Load!</button>
-                <button className="modal__button-exit" onClick={exitHome}>Exit</button>
+                <button className="modal__button-retry" onClick={refreshPage}>
+                    Retry Load!
+                </button>
+                <button className="modal__button-exit" onClick={exitHome}>
+                    Exit
+                </button>
             </div>
         </div>
     );

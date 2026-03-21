@@ -1,68 +1,50 @@
 import { useState } from "react";
-import { useAuthContext } from "../context/AuthContext";
-import { urlsAPI } from "../services/urlsAPI";
+import useCreateUrlMutation from "../hooks/useCreateUrlMutation";
 import ResultModal from "./ResultModal";
 import { ResultDetailsInterface } from "../types/picotypes";
 import "../styles/CreateForm.css";
 
-interface CreateFormProps {
-    urlCount: number;
-    setUrlCount: React.Dispatch<React.SetStateAction<number>>;
-}
-
-interface CreateResponseInterface {
-    status: number;
-    data: {
-        shortUrl: string;
-    }
-}
-
-function CreateForm({ urlCount, setUrlCount }: CreateFormProps) {
-    const authContext = useAuthContext();
+function CreateForm() {
     const [originalUrl, setOriginalUrl] = useState("");
     const [showResult, setShowResult] = useState(false);
     const [resultDetails, setResultDetails] = useState<ResultDetailsInterface | null>(null);
+    const createMutation = useCreateUrlMutation();
 
     async function handleCreateSubmit(event: React.FormEvent) {
         event.preventDefault();
-        if (originalUrl && authContext?.userDetails?.token) {
-            const response = await urlsAPI.postUrl(authContext?.userDetails?.token, originalUrl);
-            if (!(response as { error: string }).error) {
+        if (originalUrl) {
+            try {
+                const response = await createMutation.mutateAsync(originalUrl);
                 const newDetails = handleResponse(
-                    (response as CreateResponseInterface).status,
-                    (response as CreateResponseInterface).data.shortUrl,
-                    originalUrl,
-                    urlCount,
-                    setUrlCount
+                    response.status,
+                    response.data.shortUrl,
+                    originalUrl
                 );
                 setOriginalUrl("");
                 setResultDetails(newDetails);
-            } else {
-                setResultDetails(
-                    {
-                        isError: true,
-                        message: (response as { error: string }).error
-                    }
-                );
+            } catch (error: unknown) {
+                setResultDetails({
+                    isError: true,
+                    message: error instanceof Error ? error.message : "Failed to create URL",
+                });
             }
             setShowResult(true);
         }
     }
 
-    function handleResponse(status: number, shortUrl: string, longUrl: string, urlCount: number, setUrlCount: React.Dispatch<React.SetStateAction<number>>) {
+    function handleResponse(status: number, shortUrl: string, longUrl: string) {
         const newDetails: ResultDetailsInterface = {
             isError: false,
             message: "",
             originalUrl: longUrl,
-            picoUrl: shortUrl
-        }
+            picoUrl: shortUrl,
+        };
         switch (status) {
-            case (200):
+            case 200:
                 newDetails.message = "Pico URL already exists:";
                 break;
-            case (201):
+            case 201:
                 newDetails.message = "New Pico URL created:";
-                setUrlCount(urlCount + 1);
                 break;
             default:
                 newDetails.isError = true;
@@ -78,18 +60,22 @@ function CreateForm({ urlCount, setUrlCount }: CreateFormProps) {
 
     return (
         <>
-            <form className="create__container" onSubmit={event => handleCreateSubmit(event)}>
-                <label className="create__label" htmlFor="originalUrl">Create a Pico URL</label>
+            <form className="create__container" onSubmit={(event) => handleCreateSubmit(event)}>
+                <label className="create__label" htmlFor="originalUrl">
+                    Create a Pico URL
+                </label>
                 <input
                     className="create__input"
                     type="url"
                     id="originalUrl"
                     value={originalUrl}
-                    onChange={event => setOriginalUrl(event.target.value)}
+                    onChange={(event) => setOriginalUrl(event.target.value)}
                     placeholder="Long URL goes here!"
                     required
                 ></input>
-                <button className="create__button" type="submit">Minify!</button>
+                <button className="create__button" type="submit">
+                    Minify!
+                </button>
             </form>
             {showResult && <ResultModal details={resultDetails} closeModal={closeModal} />}
         </>

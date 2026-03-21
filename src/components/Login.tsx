@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
 import { authAPI } from "../services/authAPI";
 import styles from "../styles/general.module.css";
@@ -15,21 +15,18 @@ function Login() {
     async function handleLogIn(event: React.FormEvent) {
         event.preventDefault();
         if (validateLoginForm(email, password)) {
-            const response = await authAPI.postLogIn(email, password);
-            if (response.error) {
-                showErrorMessage(response.error);
-            }
-            else {
-                authContext?.setIsLoggedIn(true);
-                authContext?.setUserDetails(
-                    {
-                        id: response._id,
-                        name: response.name,
-                        email: response.email,
-                        token: response.token
-                    }
-                );
+            try {
+                const response = await authAPI.postLogIn(email, password);
+                const userDetails = {
+                    id: response._id,
+                    name: response.name,
+                    email: response.email,
+                    token: response.token,
+                };
+                authContext?.setUserDetails(userDetails);
                 navigate("/dashboard");
+            } catch (error: unknown) {
+                showErrorMessage(error instanceof Error ? error.message : "Login failed");
             }
         }
     }
@@ -56,8 +53,13 @@ function Login() {
             <div className="login__content">
                 <h1 className={styles.title}>Pico URL Login</h1>
                 <h3 className={styles.subtitle}>Please enter your e-mail and password</h3>
-                <h4 className="form__error" style={{ visibility: errorMessage.length > 2 ? "visible" : "hidden" }}>{errorMessage}</h4>
-                <form className="form__container" onSubmit={event => handleLogIn(event)}>
+                <h4
+                    className="form__error"
+                    style={{ visibility: errorMessage.length > 2 ? "visible" : "hidden" }}
+                >
+                    {errorMessage}
+                </h4>
+                <form className="form__container" onSubmit={(event) => handleLogIn(event)}>
                     <div className="form__field">
                         <label htmlFor="email">E-Mail</label>
                         <input
@@ -65,7 +67,7 @@ function Login() {
                             id="email"
                             required
                             value={email}
-                            onChange={event => setEmail(event.target.value)}
+                            onChange={(event) => setEmail(event.target.value)}
                         ></input>
                     </div>
                     <div className="form__field">
@@ -75,10 +77,12 @@ function Login() {
                             id="password"
                             required
                             value={password}
-                            onChange={event => setPassword(event.target.value)}
+                            onChange={(event) => setPassword(event.target.value)}
                         ></input>
                     </div>
-                    <button className="form__button" type="submit">Log In!</button>
+                    <button className="form__button" type="submit">
+                        Log In!
+                    </button>
                 </form>
                 <div className={styles.links}>
                     <Link to="/">Return home</Link>
